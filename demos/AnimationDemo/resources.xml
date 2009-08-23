@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:swf="http://mindless-labs.com/samhaxe/modules/Swf">
+
+   <shx:frame>
+      <swf:swf class="SwfAnimation" import="../assets/swf/animation.swf"/>
+   </shx:frame>
+
+</shx:resources>
+

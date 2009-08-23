@@ -1,0 +1,86 @@
+Format: 1.4
+
+
+Title: Sam HaXe
+SubTitle: A flash asset assembly tool
+
+Footer: Copyright (C) 2009 Mindless Labs
+Timestamp: Updated month day, year
+#   m     - One or two digit month.  January is "1"
+#   mm    - Always two digit month.  January is "01"
+#   mon   - Short month word.  January is "Jan"
+#   month - Long month word.  January is "January"
+#   d     - One or two digit day.  1 is "1"
+#   dd    - Always two digit day.  1 is "01"
+#   day   - Day with letter extension.  1 is "1st"
+#   yy    - Two digit year.  2006 is "06"
+#   yyyy  - Four digit year.  2006 is "2006"
+#   year  - Four digit year.  2006 is "2006"
+
+
+# --------------------------------------------------------------------------
+# 
+# Cut and paste the lines below to change the order in which your files
+# appear on the menu.  Don't worry about adding or removing files, Natural
+# Docs will take care of that.
+# 
+# You can further organize the menu by grouping the entries.  Add a
+# "Group: [name] {" line to start a group, and add a "}" to end it.
+# 
+# You can add text and web links to the menu by adding "Text: [text]" and
+# "Link: [name] ([URL])" lines, respectively.
+# 
+# The formatting and comments are auto-generated, so don't worry about
+# neatness when editing the file.  Natural Docs will clean it up the next
+# time it is run.  When working with groups, just deal with the braces and
+# forget about the indentation and comments.
+# 
+# --------------------------------------------------------------------------
+
+
+File: About SamHaXe  (ABOUT.txt)
+File: Installation / compilation instructions  (INSTALL.txt)
+File: Configuration  (CONFIGURATION.txt)
+File: Running SamHaXe  (USAGE.txt)
+File: Resource description files  (RESOURCES.txt)
+File: Module API v1.0  (MODULE_API_1.0.txt)
+File: License  (LICENSE.txt)
+
+Group: Main Sources  {
+
+   File: AS3Registry.hx  (src/AS3Registry.hx)
+   File: Config.hx  (src/Config.hx)
+   File: DependencyRegistry.hx  (src/DependencyRegistry.hx)
+   File: Helpers.hx  (src/Helpers.hx)
+   File: IdRegistry.hx  (src/IdRegistry.hx)
+   File: ModuleException.hx  (src/ModuleException.hx)
+   File: ModuleInterface.hx  (src/ModuleService.hx)
+   File: NsFastXml.hx  (src/NsFastXml.hx)
+   File: Optparse.hx  (src/Optparse.hx)
+   File: SamHaXe.hx  (src/SamHaXe.hx)
+   File: SamHaXeModule.hx  (src/SamHaXeModule.hx)
+   File: SymbolRegistry.hx  (src/SymbolRegistry.hx)
+   File: VariableRegistry.hx  (src/VariableRegistry.hx)
+   }  # Group: Main Sources
+
+Group: Import Modules  {
+
+   File: Binary.hx  (src/modules/Binary.hx)
+   File: Compose.hx  (src/modules/Compose.hx)
+   File: Font.hx  (src/modules/Font.hx)
+   File: Image.hx  (src/modules/Image.hx)
+   File: Sound.hx  (src/modules/Sound.hx)
+   File: Swf.hx  (src/modules/Swf.hx)
+   }  # Group: Import Modules
+
+Group: Index  {
+
+   Index: Everything
+   Class Index: Classes
+   Function Index: Functions
+   Variable Index: Variables
+   Anonymous Index: Anonymous
+   Type Index: Types
+   Interface Index: Interfaces
+   }  # Group: Index
+

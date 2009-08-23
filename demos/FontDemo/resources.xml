@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:font="http://mindless-labs.com/samhaxe/modules/Font">
+
+   <shx:frame>
+      <font:ttf name="CourierFont" import="../assets/fonts/courier.ttf">
+         <font:characters>
+            <font:include range="a..z"/>
+            <font:include range="A..Z"/>
+            <font:include characters="! "/>
+         </font:characters>
+      </font:ttf>
+   </shx:frame>
+
+</shx:resources>
+

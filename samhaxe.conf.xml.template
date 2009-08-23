@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<samhaxe>
+   <modules path="##PATH##">
+      <module name="Binary" uri="http://mindless-labs.com/samhaxe/modules/Binary"/>
+      <module name="Compose" uri="http://mindless-labs.com/samhaxe/modules/Compose"/>
+      <module name="Font" uri="http://mindless-labs.com/samhaxe/modules/Font"/>
+      <module name="Image" uri="http://mindless-labs.com/samhaxe/modules/Image"/>
+      <module name="Sound" uri="http://mindless-labs.com/samhaxe/modules/Sound"/>
+      <module name="Swf" uri="http://mindless-labs.com/samhaxe/modules/Swf"/>
+   </modules>
+</samhaxe>

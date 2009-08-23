@@ -1,0 +1,56 @@
+## Path to haXe. Default: HAXEPATH environment variable
+#haxe.path=/path/to/haxe
+
+## Path to haXe std library. Default: HAXEPATH/std
+#haxe.stdpath=${env.HAXEPATH}/std
+
+## Enable/disable debugging
+#haxe.debug=false
+
+## C++ compiler. Supported values:
+##   g++ - GNU C++ Compiler (default)
+##   msvc - Microsoft Visual C compiler
+#cpp.compiler=g++
+
+## Path to ImageMagick installation directory
+#imagemagick.path=c:/program files/imagemagick
+
+## Path to ImageMagick include directory
+#imagemagick.include.path=${imagemagick.path}/include
+
+## Path to ImageMagick lib directory (for locating CORE_RL_wand_.dll and CORE_RL_wand_.lib)
+#imagemagick.library.path=${imagemagick.path}/lib
+
+## Path to neko installation directory
+#neko.path=c:/program files/motion-twin/neko
+
+## Path to neko include directory
+#neko.include.path=${neko.path}/include
+
+## Path to neko lib directory (for locating neko.dll and neko.lib)
+#neko.library.path=${neko.path}
+
+## Path to FreeType2 installation directory
+#freetype.path=c:/libraries/freetype
+
+## Path to NaturalDocs installation directory
+#naturaldocs.path=c:/utilities/NaturalDocs
+
+## Path to NaturalDocs executalbe
+#natrualdocs.executalbe=c:/utilites/NaturalDocs/NaturalDocs.bat
+
+## Base installation path
+#install.path=/usr/local
+
+## Binaries installation path
+#install.path.bin=${install.path}/bin
+
+## Modules installation path
+#install.path.bin=${install.path}/lib/samhaxe
+
+## Documentation installation path
+#install.path.doc=${install.path}/doc/samhaxe
+
+## Configuration installation path
+#install.path.config=/etc
+

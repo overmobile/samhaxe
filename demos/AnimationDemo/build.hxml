@@ -1,0 +1,8 @@
+-swf ../bin/apps/animation.swf
+-swf-header 420:420:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/animation.swf
+-debug
+--flash-strict
+-main AnimationDemo
+

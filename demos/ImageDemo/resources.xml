@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:img="http://mindless-labs.com/samhaxe/modules/Image">
+
+   <shx:frame>
+      <img:image class="MantisImage" import="../assets/images/mantis.jpg"/>
+      <img:image class="MlabsLogo" import="../assets/images/mlabs_icon.png"/>
+   </shx:frame>
+
+</shx:resources>
+

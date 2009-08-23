@@ -1,0 +1,8 @@
+-swf ../bin/apps/all.swf
+-swf-header 640:480:20:000000
+-swf-version 9
+-swf-lib ../bin/assets/all.swf
+-debug
+--flash-strict
+-main AllDemo
+

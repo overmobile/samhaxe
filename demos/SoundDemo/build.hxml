@@ -1,0 +1,8 @@
+-swf ../bin/apps/sound.swf
+-swf-header 100:100:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/sound.swf
+-debug
+--flash-strict
+-main SoundDemo
+

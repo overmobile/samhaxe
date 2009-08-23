@@ -1,0 +1,137 @@
+=======================
+Title: Running SamHaXe
+=======================
+
+   SamHaXe can be run from the command line. It supports a number of command
+   line options and arguments. If you run it without any arguments then it'll
+   print a short help message describing it's usage similar to this:
+
+   (code)
+   Usage: SamHaXe [options] <resources.xml> <assets.swf>
+
+   Options:
+       -c <config file name>, --config <config file name>
+              If given, config is read from the specified file.
+       -d <file name>, --depfile <file name>
+              If given, resource dependecies will be written into the specified file.
+       -h, --help
+              Display this help message.
+       -l, --module-list
+              List all import modules with a short description.
+       -m module:key=value[:key=value:...], --module-options module:key=value[:key=value:...]
+              The specified options are passed to the specified import module. (Exaple: Binary:myopt=somevalue)
+       --module-help module[=interface_version[;flash_version]][:module[=interface_version[;flash_version]]...]
+              Prints help message of listed modules.
+   (end)
+
+   There are two mandatory arguments:
+   resources.xml - The resource description file.
+   assets.swf - The name of flash asset library to produce.
+
+------------------------------
+Section: Command line options
+------------------------------
+   Command line options supported by SamHaXe and their syntax.
+
+----------
+Group: -c, --config
+----------
+   Name and path of SamHaXe's configuration file.
+
+   Syntax:
+      > -c <configuration file>
+      > or
+      > --config <configuration file>
+
+   SamHaXe will use the specified config file if the option is present.
+   Without this option SamHaXe'll try to locate the config file on its own.
+   Under windows it'll try to load it from the directory where SamHaXe binary
+   is located. Under linux it'll try to load _~/.samhaxe.conf.xml_ then
+   _/etc/samhaxe.conf.xml_ if the first one fails.
+
+   See <Configuration> for details about configuration files.
+
+   Example:
+      > SamHaXe -c my_config.xml resources.xml assets.swf
+
+----------
+Group: -d, --depfile
+----------
+   Name and path of dependency file.
+   
+   Syntax:
+      > -d <dependency file>
+      > or
+      > --depfile <dependency file>
+
+   If this option is present dependecies from the resource description file
+   will be collected to the specified file. Useful for automatic dependency
+   tracking in build files (ant, GNU make, etc.)
+
+   Example:
+      > SamHaXe -d resources.deps resources.xml assets.swf
+
+------------------
+Group: -h, --help
+------------------
+   Display help message then exit.
+
+   Syntax:
+      > -h
+      > or
+      > --help
+
+------------------------
+Group: -l, --module-list
+------------------------
+   Display list of modules then exit.
+
+   Syntax:
+      > -l
+      > or
+      > --module-list
+
+   Displays the list of modules defined in _samhaxe.conf.xml_. See
+   <Configuration> for details about import modules.
+
+----------------------------
+Group: -m, --module-options
+----------------------------
+   Pass options to an import module from command line.
+
+   Syntax:
+      > -m module:key=value[:key=value:...]
+      > or
+      > --module-options module:key=value[:key=value:...]
+
+    module - Name of import module (Binary, Image, etc.)
+
+    key - Name of the property we want to set
+
+    value - The new value of the property
+
+    For future use. Currently there isn't any options supported by import
+    modules.
+
+    Example:
+      > SamHaXe -m Binary:myopt=value
+
+----------------------------
+Group: --module-help
+----------------------------
+   Display detailed help of specified modules.
+
+   Syntax:
+      > --module-help module[=interface_version[;flash_version]][:module[=interface_version[;flash_version]]...]
+
+   module - Name of import module (Binary, Image, etc.)
+
+   interface_version - Interface version to query module help for. Equals to
+      highest available interface if omitted.
+
+   flash_version - Flash version to query module help for. Eqauls to 10 if
+      omitted.
+
+   Example:
+      > SamHaXe --module-help "Image=1.0;8:Compose=1.1;9"
+

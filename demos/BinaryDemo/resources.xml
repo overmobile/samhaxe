@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:bin="http://mindless-labs.com/samhaxe/modules/Binary">
+
+   <shx:frame>
+      <bin:binary class="TextFile" import="../assets/data/test.txt" compress="true"/>
+   </shx:frame>
+
+</shx:resources>
+

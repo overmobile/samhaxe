@@ -1,0 +1,8 @@
+-swf ../bin/apps/preloading.swf
+-swf-header 100:100:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/preloading.swf
+-debug
+--flash-strict
+-main PreloadingDemo
+

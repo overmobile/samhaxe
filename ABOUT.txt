@@ -1,0 +1,90 @@
+=====================
+Title: About SamHaXe
+=====================
+
+----------------------------------------
+Section: "I used to be a spy, until..."
+----------------------------------------
+   Why exactly SamHaXe? Where does that name come from? If you're
+   familiar with _Burn Notice_ the name _Sam Axe_ might ring a bell.
+   Burn Notice is a series about spies - and what do flash developers  
+   and spies have in common? They need assets. Assets are very important.
+
+------------------
+Section: Features
+------------------
+   What does SamHaXe offer?
+
+Platform independence:
+   SamHaXe is written in _haXe_ and runs on _neko VM_ so you can compile and
+   use it on serveral platforms. The build system uses the java based
+   _Apache Ant_ which primary objective is to be cross-platform. Finally,
+   SamHaXe is a command line tool so there's no need for a GUI which is
+   the source of many incompatibilities across different platforms.
+
+Modular import system:
+   The core of SamHaXe is very minimal. Most of the work is carried out by
+   various import modules which are freely replacable.  That way you're not
+   bound to the standard import modules you can use any third party ones
+   or even write your own.
+
+Detailed documentation:
+   We're cosidering documentation as important as the feaures or even more
+   What good is a tool if you don't know how to use it, right? So we tried
+   the documentation to be as detailed as possible. No more second guessing
+   about a particular command line switch or XML tag. Everyting is documented.
+
+Open Source with the very permissive MIT license:
+   Our goal with SamHaXe is to provide an easy to use tool which is accessible
+   for users and developers. We don't want to restrict you by any means so we
+   decided to go with the MIT license which is permissive enough to fit our
+   and - more importantly - _Your_ needs.
+
+---------------------------------
+Section: Used softwares and tools
+---------------------------------
+   What is it based on?
+
+   The following softwares and tools are used creating SamHaXe:
+
+   HaXe language and compiler - (http://haxe.org) SamHaXe is written in haXe
+
+   hxformat haXe library - (http://code.google.com/p/hxformat) hxformat is a
+      library capable of reading/writing several file formats. We're using it
+      for reading/writing SWF files.
+
+   Neko virtual machine  - (http://nekovm.org) SamHaXe and its
+      modules are running under neko VM.
+
+   ImageMagick - (http://www.imagemagick.org) The native part of Image import
+      module uses ImageMagick to load images of different formats.
+
+   FreeType 2 - (http://www.freetype.org/index2.html) The native part of Font
+      import module uses FreeType to load TrueType fonts.
+
+   Apache Ant - (http://ant.apache.org) The build system is based on Apache
+      Ant.
+
+   anthx - (http://code.google.com/p/anthx) anthx is a collection of Ant tasks
+      supporting haXe/neko. SamHaXe is bundled with a copy of anthx with some
+      minor modifications.
+
+   cpptasks - (http://ant-contrib.sourceforge.net/cpptasks/index.html)
+      cpptasks is a collection of Ant tasks supporting several C/C++ compilers.
+      Used for compiling native modules. SamHaXe is bundled with a copy of
+      cpptasks with some minor modifications.
+
+   NaturalDocs - (http://www.naturaldocs.org) Documentation is generated
+      entirely with NaturalDocs.
+  
+-----------------
+Section: Authors
+-----------------
+   Who are responsible for this?
+
+   We are:
+
+   Robin Palotai /Ron/ - palotai.robin@gmail.com
+   Gábor Szuromi /KukkerMan/ - kukkerman@gmail.com
+
+   Feel free to contact us!:

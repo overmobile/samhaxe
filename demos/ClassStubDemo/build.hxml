@@ -1,0 +1,8 @@
+-swf ../bin/apps/class_stub.swf
+-swf-header 571:423:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/class_stub.swf
+-debug
+--flash-strict
+-main ClassStubDemo
+

@@ -1,0 +1,54 @@
+=====================
+Title: Configuration
+=====================
+
+   SamHaXe can be configured through a single XML file called
+   _samhaxe.conf.xml_.
+
+--------------------------------------------
+Section: General layout of samhaxe.conf.xml
+--------------------------------------------
+   The configuration file is plain XML which assigns namespace URIs to import
+   modules. Let's see the default configuration as an example:
+   
+   (code)
+   <?xml version="1.0" encoding="utf-8"?>
+   <samhaxe>
+      <modules path="/path/to/samhaxe/modules">
+         <module name="Binary" uri="http://mindless-labs.com/samhaxe/modules/Binary"/>
+         <module name="Compose" uri="http://mindless-labs.com/samhaxe/modules/Compose"/>
+         <module name="Font" uri="http://mindless-labs.com/samhaxe/modules/Font"/>
+         <module name="Image" uri="http://mindless-labs.com/samhaxe/modules/Image"/>
+         <module name="Sound" uri="http://mindless-labs.com/samhaxe/modules/Sound"/>
+         <module name="Swf" uri="http://mindless-labs.com/samhaxe/modules/Swf"/>
+      </modules>
+   </samhaxe>
+   (end)
+
+-----------------
+Group: <samhaxe>
+-----------------
+   Root node of samhaxe.conf.xml.
+
+   There isn't much to say about this node. It doesn't have any attribues yet.
+   Some may be added in the future.
+
+-----------------
+Group: <modules>
+-----------------
+   Specifies the directory of import modules and the assignment between
+   modules and nampesapce URIs. It has only one attribute at the moment:
+
+   path - Specifies the directory of import modules. If you're installing a
+      binary distribution of SamHaxe you should set this attribute according
+      to your installation.
+
+----------------
+Group: <module>
+----------------
+   Defines a mapping between an import module and a namespace URI.
+
+   Available attributes are:
+   name - Name of import module. There has to be a file in the directory of
+      modules named _'name'.n_
+   uri - The namespace URI assigned to the import module.

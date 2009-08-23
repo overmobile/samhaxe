@@ -1,0 +1,380 @@
+<project name="SamHaXe" default="samhaxe" basedir=".">
+   <description>
+      SamHaXe: a flash resource assembly tool
+   </description>
+   
+   <property environment="env"/>
+   
+   <condition property="is-windows">
+      <os family="windows"/>
+   </condition>
+   
+   <condition property="haxe.os" value="WINDOWS">
+      <os family="windows"/>
+   </condition>
+   
+   <condition property="haxe.os" value="UNIX">
+      <os family="unix"/>
+   </condition>
+   
+   <property file="config.ant"/>
+   
+   <property name="haxe.path" location="${env.HAXEPATH}"/>
+   <property name="haxe.stdpath" location="${haxe.path}/std"/>
+   <property name="haxe.debug" value="false"/>
+   <property name="cpp.compiler" value="g++"/>
+   <property name="freetype.path" location="/usr"/>
+   <property name="naturaldocs.path" location="${basedir}"/>
+   
+   <condition property="is-gcc">
+      <equals arg1="${cpp.compiler}" arg2="g++"/>
+   </condition>
+   
+   <condition property="is-msvc">
+      <equals arg1="${cpp.compiler}" arg2="msvc"/>
+   </condition>
+   
+   <condition property="haxe.debug.arg" value="-debug -D DEBUG">
+      <equals arg1="${haxe.debug}" arg2="true"/>
+   </condition>
+   
+   <condition property="haxe.debug.arg" value="">
+      <equals arg1="${haxe.debug}" arg2="false"/>
+   </condition>
+      
+   <condition property="naturaldocs.executable" value="${naturaldocs.path}/NaturalDocs.bat">
+      <os family="windows"/>
+   </condition>
+   
+   <condition property="naturaldocs.executable" value="NaturalDocs">
+      <os family="unix"/>
+   </condition>
+
+   <property name="install.path" location="/usr/local"/>
+   <property name="install.path.bin" location="${install.path}/bin"/>
+   <property name="install.path.modules" location="${install.path}/lib/samhaxe"/>
+   <property name="install.path.doc" location="${install.path}/doc/samhaxe"/>
+   <condition property="install.path.config" value="${install.path.bin}">
+      <os family="windows"/>
+   </condition>
+   <condition property="install.path.config" value="/etc">
+      <os family="unix"/>
+   </condition>
+
+   <taskdef resource="net/wildwinter/anthx/anthx.properties" classpath="${basedir}/lib/AntHX.jar"/>
+   <taskdef resource="cpptasks.tasks" classpath="${basedir}/lib/cpptasks.jar"/>
+   
+   <haxeEnv haxePath="${haxe.path}"/>
+  
+   <property name="srcdir" location="${basedir}/src"/>
+   <property name="srcdir.modules" location="${srcdir}/modules"/>
+   <property name="srcdir.native" location="${srcdir}/modules/native"/>
+   <property name="objdir" location="${basedir}/obj"/>
+   <property name="bindir" location="${basedir}/bin"/>
+   <property name="libdir" location="${basedir}/lib"/>
+   <property name="bindir.modules" location="${bindir}/modules"/>
+   <property name="bindir.native" location="${bindir}/modules/native"/>
+   <property name="demodir" location="${basedir}/demos"/>
+   <property name="demodir.bin" location="${demodir}/bin"/>
+   <property name="demodir.bin.assets" location="${demodir.bin}/assets"/>
+   <property name="demodir.bin.apps" location="${demodir.bin}/apps"/>
+   <property name="docdir" location="${basedir}/doc"/>
+   <property name="naturaldocs.dir" location="${basedir}/NaturalDocs"/>
+   <property name="naturaldocs.datadir" location="${naturaldocs.dir}/Data"/>
+
+   
+   <path id="freetype.include">
+      <pathelement location="${freetype.path}/include"/>
+      <pathelement location="${freetype.path}/include/freetype2"/>
+   </path>
+   
+   <path id="project.classpath">
+      <pathelement location="${haxe.stdpath}"/>
+      <pathelement location="${basedir}/lib/hxformat"/>
+      <pathelement location="${srcdir}"/>
+   </path>
+   
+   <target name="init">
+      <mkdir dir="${objdir}"/>
+      <mkdir dir="${bindir}"/>
+      <mkdir dir="${bindir.modules}"/>
+      <mkdir dir="${bindir.native}"/>
+      <mkdir dir="${docdir}"/>
+      <mkdir dir="${demodir.bin}"/>
+      <mkdir dir="${demodir.bin.assets}"/>
+      <mkdir dir="${demodir.bin.apps}"/>
+   </target>
+
+   <target name="samhaxe" depends="init, modules" description="compile SamHaXe">
+      <echo message="Building SamHaXe"/>
+      <haxe2neko dir="${srcdir}" main="SamHaXe" out="${bindir}/SamHaXe.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+
+      <exec dir="${bindir}" executable="nekotools">
+         <arg value="boot"/>
+         <arg value="${bindir}/SamHaXe.n"/>
+      </exec>
+
+      <copy file="${basedir}/samhaxe.conf.xml.template" tofile="${bindir}/samhaxe.conf.xml"/>
+      <replace file="${bindir}/samhaxe.conf.xml" token="##PATH##" value="${bindir.modules}"/>
+   </target>
+
+   <target name="modules" depends="native" description="compile SamHaXe modules">
+      <echo message="Building Binary.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Binary" out="${bindir.modules}/Binary.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+      
+      <echo message="Building Image.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Image" out="${bindir.modules}/Image.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+      
+      <echo message="Building Sound.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Sound" out="${bindir.modules}/Sound.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+      
+      <echo message="Building Compose.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Compose" out="${bindir.modules}/Compose.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+      
+      <echo message="Building Font.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Font" out="${bindir.modules}/Font.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+      
+      <echo message="Building Swf.n"/>
+      <haxe2neko dir="${srcdir.modules}" main="Swf" out="${bindir.modules}/Swf.n" objdir="${objdir}">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe2neko>
+
+   </target>
+
+   <target name="-native-image">
+      <cc name="${cpp.compiler}" subsystem="console" debug="false" link="shared" objdir="${objdir}" outfile="${objdir}/image">
+         <fileset file="${srcdir.native}/image.cpp"/>
+         <compilerarg value="/EHsc" if="is-msvc"/>
+         <includepath>
+            <pathelement location="${imagemagick.include.path}"/>
+            <pathelement location="${neko.include.path}"/>
+         </includepath>
+         
+         <libset dir="${imagemagick.library.path}" type="shared" libs="CORE_RL_wand_" if="is-msvc"/>
+         <libset dir="${neko.library.path}" type="shared" libs="neko" if="is-msvc"/>
+         
+         <linker name="g++" if="is-gcc">
+            <linkerarg value="${imagemagick.library.path}/CORE_RL_wand_.dll" if="is-windows"/>
+            <linkerarg value="${neko.library.path}/neko.dll" if="is-windows"/>
+            
+            <libset type="shared" libs="Wand" unless="is-windows"/>
+            <libset type="shared" libs="neko" unless="is-windows"/>
+         </linker>
+      </cc>
+      <move file="${objdir}/image.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/libimage.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+   </target>
+   
+   <target name="-native-font">
+      <cc name="${cpp.compiler}" subsystem="console" debug="false" link="shared" objdir="${objdir}" outfile="${objdir}/font">
+         <fileset file="${srcdir.native}/font.cpp"/>
+         <compilerarg value="/EHsc" if="is-msvc"/>
+         <includepath>
+            <path refid="freetype.include"/>
+            <pathelement location="${neko.include.path}"/>
+         </includepath>
+         
+         <libset dir="${freetype.path}/lib" type="shared" libs="freetype" if="is-msvc"/>
+         <libset dir="${neko.library.path}" type="shared" libs="neko" if="is-msvc"/>
+         
+         <linker name="g++" if="is-gcc">
+            <linkerarg value="${freetype.path}/bin/freetype6.dll" if="is-windows"/>
+            <linkerarg value="${neko.library.path}/neko.dll" if="is-windows"/>
+            
+            <libset type="shared" libs="freetype" unless="is-windows"/>
+            <libset type="shared" libs="neko" unless="is-windows"/>
+         </linker>
+      </cc>
+      <move file="${objdir}/font.dll" tofile="${bindir.native}/font.ndll" failonerror="false"/>
+      <move file="${objdir}/libfont.so" tofile="${bindir.native}/font.ndll" failonerror="false"/>
+   </target>
+
+   
+   <target name="native" depends="-native-image, -native-font" description="compile native modules">
+   </target>
+   
+   <target name="clean" description="clean up binaries, documentation and temporary files">
+      <delete dir="${objdir}"/>
+      <delete dir="${bindir}"/>
+      <delete dir="${docdir}"/>
+      <delete dir="${naturaldocs.datadir}"/>
+      <delete dir="${demodir.bin}"/>
+   </target>
+
+   <target name="doc" depends="init" description="build documentation">
+      <exec dir="${naturaldocs.path}" executable="${naturaldocs.executable}">
+         <arg value="-i"/>
+         <arg value="${basedir}"/>
+         <arg value="-xi"/>
+         <arg value="${libdir}"/>
+         <arg line="-o HTML"/>
+         <arg value="${docdir}"/>
+         <arg value="-p"/>
+         <arg value="${naturaldocs.dir}"/>
+         <arg line="-s Default SamHaXe"/>
+         <arg line="-cs UTF-8"/>
+      </exec>
+   </target>
+
+   <target name="demos" depends="samhaxe" description="build demo asset libraries and applications">
+      <echo message="Building AllDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/AllDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/all.swf"/>
+      </exec>
+      <haxe dir="${demodir}/AllDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+      <echo message="Building AnimationDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/AnimationDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/animation.swf"/>
+      </exec>
+      <haxe dir="${demodir}/AnimationDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+      <echo message="Building BinaryDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/BinaryDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/binary.swf"/>
+      </exec>
+      <haxe dir="${demodir}/BinaryDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+      
+      <echo message="Building ClassStubDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/ClassStubDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/class_stub.swf"/>
+      </exec>
+      <haxe dir="${demodir}/ClassStubDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+      <echo message="Building FontDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/FontDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/font.swf"/>
+      </exec>
+      <haxe dir="${demodir}/FontDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+      <echo message="Building ImageDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/ImageDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/image.swf"/>
+      </exec>
+      <haxe dir="${demodir}/ImageDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+      
+      <echo message="Building LibraryDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/LibraryDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/library.swf"/>
+      </exec>
+      <haxe dir="${demodir}/LibraryDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+      <echo message="Building PreloadingDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/PreloadingDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/preloading.swf"/>
+      </exec>
+      <haxe dir="${demodir}/PreloadingDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+      
+      <echo message="Building SoundDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/SoundDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/sound.swf"/>
+      </exec>
+      <haxe dir="${demodir}/SoundDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+   </target>
+
+   <target name="install" depends="samhaxe, doc" description="install SamHaXe and documentation">
+      <mkdir dir="${install.path.bin}"/>
+      <mkdir dir="${install.path.modules}"/>
+      <mkdir dir="${install.path.doc}"/>
+
+      <move file="${bindir}/SamHaXe" todir="${install.path.bin}"/>
+      <copy file="${basedir}/samhaxe.conf.xml.template" tofile="${install.path.config}/samhaxe.conf.xml"/>
+      <replace file="${install.path.config}/samhaxe.conf.xml" token="##PATH##" value="${install.path.modules}"/>
+      <move todir="${install.path.modules}">
+         <fileset dir="${bindir.modules}"/>
+      </move>
+      <move todir="${install.path.doc}">
+         <fileset dir="${docdir}"/>
+      </move>
+   </target>
+</project>

@@ -1,0 +1,214 @@
+=======================
+Title: Module API v1.0
+=======================
+
+---------------------------
+Section: Versioning system
+---------------------------
+
+-----------------------
+Group: Version numbers
+-----------------------
+   Every version number in SamHaXe has three parts separated by dots(.)
+      o major version
+      o minor version
+      o bugfix version
+
+   So for example the version string "1.2.14" corresponds to
+      o major version: 1
+      o minor version: 2
+      o bugfix version: 14
+
+   The major and minor versions give the interface version. The bugfix version
+   number is used to address different versions of a module which share a
+   common interface but are differ in some sort of functionality.
+
+-------------------------------
+Group: Version request strings
+-------------------------------
+   Similar to version numbers but you can omit every part (major, minor,
+   bugfix)
+
+   Version request strings are used to query an interface from some import
+   module which has specific properties. For example if you need a module
+   interface which has interface version "1.2" but you don't care about the
+   bugfix version, you can use "1.2" as the version request string. In this
+   case the highest available bugfix version is queried.
+
+---------------------------------------------------
+Section: Interface independent variables/functions
+---------------------------------------------------
+   Variable: interfaces
+      List of supported module interface versions.
+
+      Type:
+         > Array<Srting>
+
+   Variable: description
+      Short descrition string about the import module.
+
+      Type:
+         > String
+
+      The description is printed by 
+      --module-list command line option. See <Command line options>
+
+   Function: initModule
+      Initializes the module.
+
+      Prototype:
+         > static function initModule(): Bool
+
+      Returns:
+         true - On success
+         false - On failure
+   
+   Function: initInterface
+      Requests a specific interface version from the import module.
+
+      Prototype:
+         > static function initInterface(version: String, moduleService: Dynamic): Void
+   
+      Exports the following functions on success:
+         o <check>
+         o <import>
+         o <help>
+
+      Parameters:
+         version - The version request string
+         moduleService - A collection of functions passed to the module. In
+            module API version 1.0 it's a <ModuleService_1_0> instance.
+
+      Throws:
+         If some error occurs during interface initialization the function
+         throws a String as the error message.
+
+   Function: main
+      Main entry point of the module.
+
+      Prototype:
+         > static function main()
+
+      Exports the interface independent varibales and functions:
+         o <interfaces>
+         o <description>
+         o <initModule>
+         o <initInterface>
+
+-------------------------------------------------
+Section: Interface dependent variables/functions
+-------------------------------------------------
+   Function: check
+      Validates a resource XML node.
+
+      Prototype:
+         > function check(node: NsFastXml): Void
+
+      Validates node as required by the rules of import module (usually with
+      haxe.xml.Check)
+
+      Parameters:
+         node - The XML node to be validated.
+
+      Throws:
+         Some exception when the syntax of node is invalid.
+
+   Function: import
+      Imports assets described by a resource XML node.
+
+      Prototype:
+         > function import(node: NsFastXml, options: Hash<String>): Array<SWFTag>
+
+      Parameters:
+         node - The XML node describing the asset.
+         options - The hash of options passed to the module in command line.
+            See <Command line options> for details.
+
+      Returns:
+         The array of generated SWF tags.
+
+   Function: help
+      Returns a long help string about XML tags supported by the module.
+
+      Prototype:
+         > function help(): String
+
+      Returns:
+         The help string.
+
+-------------------------------------------
+Section: The process of importing an asset
+-------------------------------------------
+   Detailed description of the import process.
+
+   Let's assume we want to import _logo.png_ into our asset library. It's an
+   image file so we'll examine the Image module.
+
+---------------------------------------------------
+Group: 1st step: module - namespace URI assignment
+---------------------------------------------------
+   First we should assign some namespace URI to the module. This can be done
+   through samhaxe.conf.xml. See <Configuration>
+   
+   > <module name="Image" uri="http://mindless-labs.com/samhaxe/modules/Image"/>
+
+   SamHaXe reads the configuration file and stores the module -> URI
+   assignments but doesn't loads or initializes any module yet.
+
+--------------------------------------
+Group: 2nd step: namespace definition
+--------------------------------------
+   Define a namespace in the resource description file.
+   
+   > <shx:resources ...
+   >    xmlns:img="http://mindless-labs.com/samhaxe/modules/Image#1.0" />
+
+   At this point following happens:
+      o SamHaXe loads the Image module and calls its <main> function.
+      o <main> exports the function <initInterface> (and some other).
+         > var lm = neko.vm.Module.local();
+         > lm.setExport(SamHaXeModule.INIT_INTERFACE, initInterface);
+      o SamHaXe calls <initInterface> with version equals to "1.0".
+      o <initInterface> exports the function <import> (and some other).
+        > var module = new Image();
+        > module.moduleService_1_0 = cast moduleService;
+        > lm.setExport(SamHaXeModule.IMPORT_FUN_1_0, module.import_image_1_0);
+
+--------------------------------------
+Group: 3rd step: asset import XML tag 
+--------------------------------------
+   Specify the appropriate XML tag in the resource description file.
+
+   > <img:image import="logo.png" class="LogoImage" />
+
+   Because the namespace _img_ is assigned to Image import module, SamHaXe
+   passes the entire XML tag to it.
+
+-------------------------------------
+Group: 4th step: XML syntax checking
+-------------------------------------
+   The import module checks the syntax of XML node.
+
+   SamHaXe calls the exported <check> function with the parsed XML node.
+
+-------------------------------------
+Group: 5th step: importing the asset
+-------------------------------------
+   The import module processes the XML node and returns the appropriate SWF
+   tags.
+
+   SamHaXe calls the exported <import> function with the parsed XML node.
+
+   At this point the following happens in <import> function:
+      o Extracts the _import_ and _class_ attributes from  the XML node.
+      o Loads _logo.png_ by calling import_image function defined in
+        native image module.
+      o Adds _LogoImage_ to SymbolRegistry and AS3Registry because we haven't
+        specified the genclass attribute and the default behavior is to
+        generate both symbolclass and AS3 class stub.
+      o Adds _logo.png_ to DependencyRegistry because resources depend on
+        _logo.png_.
+      o Checks the MD5 registry if the same image has been imported before. If
+        it has then don't import it again and display a warning message.
+      o Compresses image data with zlib and returns a DefineBitsLossless2 SWF
+        tag.

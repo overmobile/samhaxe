@@ -1,0 +1,8 @@
+-swf ../bin/apps/library.swf
+-swf-header 200:200:20:ffffff
+-swf-version 9
+-swf-lib ../assets/swf/ext_library.swf
+-debug
+--flash-strict
+-main LibraryDemo
+

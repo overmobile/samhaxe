@@ -1,0 +1,198 @@
+==================================
+Title: Resource description files
+==================================
+
+   Every asset library assembled with SamHaXe is described by an XML file
+   called the resource description file. In this file you can specify which
+   external resources will be imported, how they'll be called and which frame
+   they'll reside on. The resource descriptor file is a standard XML file with
+   namespaces. If you are not faimilar with XML files or namespaces within
+   XML files then you should check the following links for more information
+   about these subject:
+
+   XML:
+      tutorial - <http://www.w3schools.com/xml/default.asp>
+      specification - <http://www.w3.org/TR/xml/>
+
+   Namespaces in XML files:
+      tutorial - <http://www.w3schools.com/XML/xml_namespaces.asp>
+      specification - <http://www.w3.org/TR/xml-names/>
+
+------------------------------------------------------
+Section: General layout of resource description files
+------------------------------------------------------
+   Resource description files are plain XMLs with namespaces. Before
+   descending into the details let's see a simple resource description file as
+   an example:
+   (code)
+   <?xml version="1.0" encoding="utf-8"?>
+   
+   <shx:resources version="9" compress="false" package="my.package.resources"
+      xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
+      xmlns:font="http://mindless-labs.com/samhaxe/modules/Font">
+
+      <shx:frame>
+         <img:image import="logo.png" class="Logo" />
+      
+         <font:ttf import="simple.ttf" name="MinimalFont">
+            <font:characters>
+               <font:include range="a..z"/>
+               <font:include range="A..Z"/>
+               <font:include range="0..9"/>
+               <font:include characters=" ,.:!?-()"/>
+            </font:characters>
+         </font:ttf>
+      </shx:frame>
+
+      <shx:frame>
+         <img:image import="background.jpg" class="BackgroundImage" />
+         <font:ttf import="fancy.ttf" name="MainFont" />
+      </shx:frame>
+
+   </shx:resources>
+   (end)
+
+   Huhh... "You call that simple?!" some would ask. Well it may look a bit
+   complicated at first sight but it's fairly straightforward if you take a
+   closer look. In the following sections we'll examine each element in
+   detail.
+
+-----------------------
+Group: XML declaration
+-----------------------
+   Standard XML declaration.
+
+   > <?xml version="1.0" encoding="utf-8"?>
+   There's nothing much to talk about here. It's a standard XML declaration:
+   
+   version - The version of used XML standard
+   encoding - Character encoding of the resource description file
+
+---------------------------------
+Group: <shx:resources>
+---------------------------------
+   The root XML node defines general attributes and namespaces used through importing.
+   
+   >  <shx:resources version="9" compress="false" package="resources"
+   >     xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
+   >     xmlns:font="http://mindless-labs.com/samhaxe/modules/Font">
+
+   Every resource description file has a root node called _shx:resources_.
+   Every XML node associated with SamHaXe (and not with some of its modules)
+   uses the namespace _shx_. Let's see it's available attrubtes first:
+
+   version - Version of the generated SWF file as a numeric value between 1 and
+      10 (as of this writing). It has effect on SWF tag generation of import modules
+      because some tags are only supported in specific flash versions.
+
+   compress - (false, true) Controls the compression of the generated SWF
+      file.
+
+   package - Optional attribute specifying the package of generated symbol
+      classes and AS3 class stubs. It's a convenience attribute so you don't
+      have to write _my.package.resources_ before every class name.
+
+   Besides the attributes there are two namespace decralations in the root
+   node: _img_ and _font_. You assign an import module to a namespace with
+   a namespace declaration. After that if SamHaXe encounters an XML node with
+   namespace other than _shx_ it'll invoke the appropriate import module for
+   that node. The namespace URI reference and actual import module assignments
+   are in SamHaXe's configuration file called _samhaxe.conf.xml_.
+
+   An import module may support more than one module interface version. If
+   you need a specific version of a module you can specify it in the URI as an
+   anchor. For example:
+
+   >  <shx:resources version="9" compress="false" package="resources"
+   >     xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
+   >     xmlns:font="http://mindless-labs.com/samhaxe/modules/Font#1.1">
+
+   Here you query version 1.1 of Font import module. See <Version numbers> for
+   more information.
+
+   Least but not last here is a list of standard import modules and their
+   namespace URI:
+
+   Compose - http://mindless-labs.com/samhaxe/modules/Compose
+   Binary - http://mindless-labs.com/samhaxe/modules/Binary
+   Font - http://mindless-labs.com/samhaxe/modules/Font
+   Image - http://mindless-labs.com/samhaxe/modules/Image
+   Sound - http://mindless-labs.com/samhaxe/modules/Sound
+   Swf - http://mindless-labs.com/samhaxe/modules/Swf
+
+------------------
+Group: <shx:frame>
+------------------
+   Defines a new frame in the generated SWF file.
+
+   Why do we need frames anyway? We only want to import images, sounds, fonts
+   and other things and that's it. Well, it's almost true. But there's an
+   interesting feature called _preloading_ which requires frames.
+   
+   Suppose you have a web site with a flash animation embedded in it. When
+   someone opens your site in a web browser the browser detects that
+   there's a flash animation and passes the URL of the animation to flash
+   player. The flash player then starts downloading it but as soon as the
+   first frame is loaded it starts playing the animation and executing AS3
+   code. It won't wait until every frame has loaded. It has advantages and
+   disadvantages. If it's a "traditional" flash animation then the animation
+   can be jumpy on a slow internet connection becuase the download speed might
+   be lower that required for a smooth animation. On the other hand if you put
+   only a few assets on the first frame you can display a message such as
+   "Please wait..." and wait till the other assetes are loaded. It's much
+   friendlier solution than to put everything on the first frame and have the
+   user to watch an empty window while flash player is loading.
+
+   Now back to resource definitions. In SamHaXe every asset resides on a
+   frame. It's not a big surprise cosidering the design of SWF. A frame can
+   contain any number of assets (even zero). You can define a new frame with
+   the
+   
+   > <shx:frame>
+   >   ...
+   > </shx:frame>
+
+   XML tag pairs. Frames are automatically numbered starting from 1 so assets
+   imported between the first frame tags will reside on the first frame
+   (important for preloading).
+
+--------------
+Group: Assets
+--------------
+   Imported resources of different kind.
+
+   Within frames you can import different kind of resources (assets) by
+   specifying XML tags defined by import modules. You reference an import
+   module with it's assigned namespace. Let's see an example from the above
+   resource description file:
+
+   > <img:image import="logo.png" class="Logo" />
+
+   Okay, what does it tell us? The namespace is _img_ which is assigned to the
+   <Image.hx> import module. This module defines the <image> XML tag which can be
+   used to import a wide range of image file formats. The attributes are:
+
+   import - The name of file to import.
+   class - The class name we can refer to the imported asset in AS3. Because
+   we specified the _package_ attribute in _<shx:resources>_ earlier the
+   resulting class name will be: _my.package.resources.Logo_
+
+   There's one more asset import on the first frame
+   (code)
+   <font:ttf import="simple.ttf" name="MinimalFont">
+      <font:characters>
+         <font:include range="a..z"/>
+         <font:include range="A..Z"/>
+         <font:include range="0..9"/>
+         <font:include characters=" ,.:!?-()"/>
+      </font:characters>
+   </font:ttf>
+   (end)
+
+   It imports the specified character images (glyphs) from _simple.ttf_ with
+   the name: _MinimalFont_. We won't go into details of <ttf> XML tag. You can
+   read the full documentation at <Font.hx>.
+
+   After flash player loads these two assets it starts executing AS3 code
+   (it always resides on the first frame). You can display the logo, and
+   some simple message while the player is loading the remaining frames.

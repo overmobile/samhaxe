@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:snd="http://mindless-labs.com/samhaxe/modules/Sound">
+
+   <shx:frame>
+      <snd:sound class="ExplodeSound" import="../assets/sounds/plink.wav"/>
+   </shx:frame>
+
+</shx:resources>
+

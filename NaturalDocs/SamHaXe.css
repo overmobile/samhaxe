@@ -1,0 +1,31 @@
+blockquote pre {
+   margin: 5px 30px;
+   padding: 5px;
+   background: #eee;
+}
+
+.CAnonymous .CTitle {
+   font-size: 18pt;
+   color: #FFFFFF; background-color: green;
+   padding: 10px 15px 10px 15px;
+   border-width: 2px 0; border-color: #000000;
+   margin-left: 0; margin-right: 0
+}
+
+.CAnonymous .Prototype {
+   border-width: 1px 2px 2px 1px; border-style: solid; border-color: #A0A0A0;
+   background-color: #F4F4F4;
+}
+
+.SAnonymous td {
+   padding-top: 1em;
+}
+
+.SAnonymous .SEntry {
+   font-weight: bold;
+}
+
+.SAnonymous .SEntry a {
+   color: green;
+}
+

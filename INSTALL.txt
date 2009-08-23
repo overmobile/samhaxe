@@ -1,0 +1,147 @@
+===============================================
+Title: Installation / compilation instructions
+===============================================
+
+Section: Compiling from source
+
+---------------------------------
+Group: Prerequisities
+---------------------------------
+Dependencies required by SamHaXe.
+
+To compile SamHaXe you will need several software packages installed on your
+system.
+
+Required software:
+
+   HaXe compiler - <http://haxe.org/download> 
+   Neko virtual machine with C headers and shared libraries - <http://nekovm.org/download>
+   Some supported C/C++ sompiler suite - GCC, MinGW or VisualStudio
+   ImageMagick - <http://www.imagemagick.org/script/binary-releases.php>
+   FreeType 2 - <http://gnuwin32.sourceforge.net/packages/freetype.htm>
+   Apache Ant 1.7 or better - <http://ant.apache.org/bindownload.cgi>
+   NaturalDocs - <http://www.naturaldocs.org/download.html>
+
+----------------------------------
+Group: Build configuration
+----------------------------------
+Configuring build options, dependencies and installation paths.
+
+After installing the required software packages you should take a look at
+_config.ant.sample_ file and create _config.ant_ with the appropriate options
+for your system.
+
+Available options:
+
+   haxe.path - (Default: HAXEPATH environment variable) Path to haXe
+   executable. It's important to set either this variable correctly or define
+   HAXEPATH otherwise ant won't find haXe compiler.
+
+   haxe.stdpath - (Default: haxe.path/std) Path to haXe standard library.
+
+   haxe.debug - (true / _false_) Enable/disable debugging. 
+
+   cpp.compiler - (_g++_ / msvc) C++ compiler to use for compiling native
+   modules. The C++ compiler has to be accessible from the command line so you
+   should add it to PATH.
+
+   imagemagick.include.path - Path to ImageMagick's header files. Required
+   for compiling native image module.
+
+   imagemagick.library.path - Path to ImageMagick's library files. Relevant
+   only under windows. For MinGW you should give the path to the directory
+   where CORE_RL_wand_.dll is located while for MSVC where CORE_RL_wand_.lib
+   is located.
+
+   neko.include.path - Path to neko's include files. Required for all native
+   modules (image and font).
+
+   neko.library.path - Path to neko's library files. Relevant only under
+   windows. For MinGW you should give the path to the directory where
+   neko.dll is located while for MSVC where neko.lib is located.
+
+   freetype.path - (_/usr_) Path to freetype's base directory. The default
+   value is /usr which is fine under linux for most distributions. Under
+   windows you should provide the base directory where you installed freetype.
+
+   naturaldocs.path - (_current working directory_) Path to NaturalDocs' installation
+   directory. NaturalDocs' will be executed in this directory.
+
+   naturaldocs.executable - (_NaturalDocs_) Full path to NaturalDocs'
+   executable. Under windows you should use some\path\NaturalDocs.bat here.
+
+   install.path - (_/usr/local_) Base installation path.
+
+   install.path.bin - (_install.path/bin_) Binaries installation path.
+
+   install.path.modules - (_install.path/lib/samhaxe_) Modules installation
+   path.
+
+   install.path.doc - (_install.path/doc/samhaxe_) Documentation installation
+   path.
+
+   install.path.config - (_/etc_) Configuration installation path.
+
+Configuring the C++ compiler under windows:
+
+   SamHaXe uses native modules (neko primitives in neko terms) to achieve
+   tasks which require using external libraries not currently supported by
+   neko. These modules are written in C++ so ant has to be able to invoke the
+   appropriate C++ compiler. There are no options concerning the path to the
+   compiler so make sure it's accessible from the command line without
+   problems. For example MSVC provides a batch file called "Microsoft Visual
+   Studio Command Prompt" which is accessible from the start menu. Launching
+   this command prompt appends MSVC to PATH environment variable.
+
+Configuring ImageMagick under windows:
+
+   ImageMagick requires some more configuration beyond specifying include and
+   library paths. That is because the compiled native modules have to be able
+   to locate ImageMagick's DLLs. This can be achieved when two more paths are
+   added to the PATH environment variable. Let's assume that ImageMagick is
+   installed under C:\Program Files\ImageMagick. Then the two additional
+   paths are:
+
+      C:\Program Files\ImageMagick - Required for locating CORE_RL_XXXX_.dll
+      files.
+      C:\Program Files\ImageMagick\modules - Required for sub-modules used by
+      ImageMagick.
+
+----------------------------------
+Group: Building SamHaXe
+----------------------------------
+Compiling the source, building the documentation.
+
+Every component of SamHaXe can be built with the corresponding ant target. You
+can build an ant target from the command line issuing the command from the
+project's base directory:
+> prompt> ant target_name
+
+Available targets are:
+
+   clean - Clean up previously built binaries, documentation, temporary
+   files, etc.
+
+   demos - Build several assets and sample SWF applications.
+
+   doc - Build documentation with NaturalDocs.
+
+   install - Install SamHaXe and documentation into the specified directories.
+
+   modules - Compile SamHaXe modules
+
+   native - Compile native modules.
+
+   samhaxe - Compile the entire source including modules, native modules and
+   SamHaXe itself. This is the default target.
+
+To compile SamHaxe issue the following command:
+> prompt> ant
+
+This will compile native modules, modules, SamHaXe and place the binaries
+under the _bin_ directory.
+
+To install binaries and documentation:
+> prompt> ant install
+
+

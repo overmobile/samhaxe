@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:bin="http://mindless-labs.com/samhaxe/modules/Binary"
+   xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
+   xmlns:snd="http://mindless-labs.com/samhaxe/modules/Sound"
+   xmlns:swf="http://mindless-labs.com/samhaxe/modules/Swf"
+   xmlns:font="http://mindless-labs.com/samhaxe/modules/Font"
+   xmlns:comp0="http://mindless-labs.com/samhaxe/modules/Compose#1.0"
+   xmlns:comp1="http://mindless-labs.com/samhaxe/modules/Compose#1.1">
+
+   <shx:frame>
+      <bin:binary class="TextFile" import="../assets/data/test.txt" />
+
+      <img:image class="MaskedMantis" import="../assets/images/mantis.jpg" mask="../assets/images/mantis_mask.png"/>
+      <img:image class="Logo" import="../assets/images/mlabs_icon.png" />
+      
+      <snd:sound class="TickSnd" import="../assets/sounds/ticking.mp3" />
+
+      <swf:swf class="Animation" import="../assets/swf/animation.swf"/>
+      <swf:library import="../assets/swf/ext_library.swf" />
+      
+      <font:ttf name="MainFont" import="../assets/fonts/courier.ttf" language="latin">
+         <font:characters>
+            <font:include range="a..z"/>
+            <font:include range="A..Z"/>
+            <font:include range="0..9"/>
+            <font:include characters=" ,.:!?-()"/>
+         </font:characters>
+      </font:ttf>
+   </shx:frame>
+
+   <shx:frame>
+      <comp0:compose>
+         <snd:sound class="ExplodeSnd" import="../assets/sounds/plink.wav" />
+      </comp0:compose>
+      
+      <comp1:alfa_compose>
+         <snd:sound class="BgMusic" import="../assets/sounds/scenes_from_childhood.wav" />
+      </comp1:alfa_compose>
+   </shx:frame>
+
+</shx:resources>
+

@@ -1,0 +1,8 @@
+-swf ../bin/apps/font.swf
+-swf-header 400:200:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/font.swf
+-debug
+--flash-strict
+-main FontDemo
+

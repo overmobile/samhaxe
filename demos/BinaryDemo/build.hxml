@@ -1,0 +1,7 @@
+-swf ../bin/apps/binary.swf
+-swf-header 400:200:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/binary.swf
+-debug
+--flash-strict
+-main BinaryDemo
