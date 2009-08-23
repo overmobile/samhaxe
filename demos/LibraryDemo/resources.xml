@@ -4,7 +4,7 @@
    xmlns:swf="http://mindless-labs.com/samhaxe/modules/Swf">
 
    <shx:frame>
-      <swf:library import="../bin/assets/ext_library.swf"/>
+      <swf:library import="../assets/swf/ext_library.swf"/>
    </shx:frame>
 
 </shx:resources>
