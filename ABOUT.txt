@@ -84,7 +84,7 @@ Section: Authors
 
    We are:
 
-   Robin Palotai /Ron/ - palotai.robin@gmail.com
-   Gábor Szuromi /KukkerMan/ - kukkerman@gmail.com
+   Robin Palotai /Ron/ - ron@mindless-labs.com
+   Gábor Szuromi /KukkerMan/ - kukkerman@mindless-labs.com
 
    Feel free to contact us!:
