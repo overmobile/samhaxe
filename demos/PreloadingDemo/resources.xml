@@ -3,8 +3,12 @@
    xmlns:shx="http://mindless-labs.com/samhaxe"
    xmlns:snd="http://mindless-labs.com/samhaxe/modules/Sound">
 
+   <!-- Empty first frame. You may put resources required in preloader animation here. -->
+   <shx:frame/>
+
+   <!-- Frame with heavy assets -->
    <shx:frame>
-      <snd:sound class="Music" import="../assets/sounds/scenes_from_childhood.wav"/>
+      <snd:sound class="Music" import="../assets/sounds/scenes_from_childhood.mp3"/>
    </shx:frame>
 
 </shx:resources>
