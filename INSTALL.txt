@@ -15,10 +15,10 @@ system.
 Required software:
 
    HaXe compiler - <http://haxe.org/download> 
-   Neko virtual machine with C headers and shared libraries - <http://nekovm.org/download>
+   Neko virtual with C dev package - <http://nekovm.org/download>
    Some supported C/C++ sompiler suite - GCC, MinGW or VisualStudio
-   ImageMagick - <http://www.imagemagick.org/script/binary-releases.php>
-   FreeType 2 - <http://gnuwin32.sourceforge.net/packages/freetype.htm>
+   ImageMagick with C/C++ dev package - <http://www.imagemagick.org/script/binary-releases.php>
+   FreeType 2 with C/C++ dev package - <http://gnuwin32.sourceforge.net/packages/freetype.htm>
    Apache Ant 1.7 or better - <http://ant.apache.org/bindownload.cgi>
    NaturalDocs - <http://www.naturaldocs.org/download.html>
 
@@ -46,12 +46,18 @@ Available options:
    should add it to PATH.
 
    imagemagick.include.path - Path to ImageMagick's header files. Required
-   for compiling native image module.
+   for compiling native image module. You can obtain this value undex linux by
+   issuing the command: "pkg-config --cflags-only-I Wand"
 
    imagemagick.library.path - Path to ImageMagick's library files. Relevant
    only under windows. For MinGW you should give the path to the directory
    where CORE_RL_wand_.dll is located while for MSVC where CORE_RL_wand_.lib
    is located.
+   
+   imagemagick.library.name - (CORE_RL_wand_ under windows or Wand under linux)
+   Name of ImageMagick's shared library without any prefix or suffix. You can
+   obtain this value undex linux by issuing the command: "pkg-config
+   --libs-only-l Wand"
 
    neko.include.path - Path to neko's include files. Required for all native
    modules (image and font).
@@ -65,7 +71,7 @@ Available options:
    windows you should provide the base directory where you installed freetype.
 
    naturaldocs.path - (_current working directory_) Path to NaturalDocs' installation
-   directory. NaturalDocs' will be executed in this directory.
+   directory. NaturalDocs will be executed in this directory.
 
    naturaldocs.executable - (_NaturalDocs_) Full path to NaturalDocs'
    executable. Under windows you should use some\path\NaturalDocs.bat here.
@@ -99,7 +105,7 @@ Configuring ImageMagick under windows:
    library paths. That is because the compiled native modules have to be able
    to locate ImageMagick's DLLs. This can be achieved when two more paths are
    added to the PATH environment variable. Let's assume that ImageMagick is
-   installed under C:\Program Files\ImageMagick. Then the two additional
+   installed under _C:\Program Files\ImageMagick_. Then the two additional
    paths are:
 
       C:\Program Files\ImageMagick - Required for locating CORE_RL_XXXX_.dll
@@ -120,9 +126,12 @@ project's base directory:
 Available targets are:
 
    clean - Clean up previously built binaries, documentation, temporary
-   files, etc.
+      files, etc.
 
-   demos - Build several assets and sample SWF applications.
+   demos - Build several assets and sample SWF applications. Assembled assets
+      go to _demos/bin/assets_, compiled applications go to _demos/bin/apps_.
+
+   dist - Build a zip compressed binary distribution.
 
    doc - Build documentation with NaturalDocs.
 
@@ -133,7 +142,7 @@ Available targets are:
    native - Compile native modules.
 
    samhaxe - Compile the entire source including modules, native modules and
-   SamHaXe itself. This is the default target.
+      SamHaXe itself. This is the default target.
 
 To compile SamHaxe issue the following command:
 > prompt> ant

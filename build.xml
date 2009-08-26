@@ -25,6 +25,14 @@
    <property name="cpp.compiler" value="g++"/>
    <property name="freetype.path" location="/usr"/>
    <property name="naturaldocs.path" location="${basedir}"/>
+
+   <condition property="imagemagick.library.name" value="CORE_RL_wand">
+      <os family="windows"/>
+   </condition>
+   
+   <condition property="imagemagick.library.name" value="Wand">
+      <os family="unix"/>
+   </condition>
    
    <condition property="is-gcc">
       <equals arg1="${cpp.compiler}" arg2="g++"/>
@@ -79,9 +87,9 @@
    <property name="demodir.bin.assets" location="${demodir.bin}/assets"/>
    <property name="demodir.bin.apps" location="${demodir.bin}/apps"/>
    <property name="docdir" location="${basedir}/doc"/>
+   <property name="distdir" location="${basedir}/dist"/>
    <property name="naturaldocs.dir" location="${basedir}/NaturalDocs"/>
    <property name="naturaldocs.datadir" location="${naturaldocs.dir}/Data"/>
-
    
    <path id="freetype.include">
       <pathelement location="${freetype.path}/include"/>
@@ -122,7 +130,7 @@
       <replace file="${bindir}/samhaxe.conf.xml" token="##PATH##" value="${bindir.modules}"/>
    </target>
 
-   <target name="modules" depends="native" description="compile SamHaXe modules">
+   <target name="modules" depends="init, native" description="compile SamHaXe modules">
       <echo message="Building Binary.n"/>
       <haxe2neko dir="${srcdir.modules}" main="Binary" out="${bindir.modules}/Binary.n" objdir="${objdir}">
          <classpath refid="project.classpath"/>
@@ -176,14 +184,14 @@
             <pathelement location="${neko.include.path}"/>
          </includepath>
          
-         <libset dir="${imagemagick.library.path}" type="shared" libs="CORE_RL_wand_" if="is-msvc"/>
+         <libset dir="${imagemagick.library.path}" type="shared" libs="${imagemagick.library.name}" if="is-msvc"/>
          <libset dir="${neko.library.path}" type="shared" libs="neko" if="is-msvc"/>
          
          <linker name="g++" if="is-gcc">
-            <linkerarg value="${imagemagick.library.path}/CORE_RL_wand_.dll" if="is-windows"/>
+            <linkerarg value="${imagemagick.library.path}/${imagemagick.library.name}.dll" if="is-windows"/>
             <linkerarg value="${neko.library.path}/neko.dll" if="is-windows"/>
             
-            <libset type="shared" libs="Wand" unless="is-windows"/>
+            <libset type="shared" libs="${imagemagick.library.name}" unless="is-windows"/>
             <libset type="shared" libs="neko" unless="is-windows"/>
          </linker>
       </cc>
@@ -216,7 +224,7 @@
    </target>
 
    
-   <target name="native" depends="-native-image, -native-font" description="compile native modules">
+   <target name="native" depends="init, -native-image, -native-font" description="compile native modules">
    </target>
    
    <target name="clean" description="clean up binaries, documentation and temporary files">
@@ -376,5 +384,26 @@
       <move todir="${install.path.doc}">
          <fileset dir="${docdir}"/>
       </move>
+   </target>
+
+   <target name="dist" depends="samhaxe, doc" description="build binary distribution">
+      <mkdir dir="${distdir}/samhaxe"/>
+      <mkdir dir="${distdir}/samhaxe/modules"/>
+      <mkdir dir="${distdir}/samhaxe/modules/native"/>
+      <mkdir dir="${distdir}/samhaxe/doc"/>
+      
+      <copy file="${bindir}/SamHaXe" todir="${distdir}/samhaxe"/>
+      <copy file="${basedir}/samhaxe.conf.xml.template" todir="${distdir}/samhaxe"/>
+      <copy todir="${distdir}/samhaxe/modules">
+         <fileset dir="${bindir.modules}"/>
+      </copy>
+      <copy todir="${distdir}/samhaxe/doc">
+         <fileset dir="${docdir}"/>
+      </copy>
+      <zip destfile="${distdir}/samhaxe.zip">
+         <fileset dir="${distdir}/samhaxe"/>
+      </zip>
+
+      <delete dir="${distdir}/samhaxe"/>
    </target>
 </project>

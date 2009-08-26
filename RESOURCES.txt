@@ -28,6 +28,7 @@ Section: General layout of resource description files
    <?xml version="1.0" encoding="utf-8"?>
    
    <shx:resources version="9" compress="false" package="my.package.resources"
+      xmlns:shx="http://mindless-labs.com/samhaxe"
       xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
       xmlns:font="http://mindless-labs.com/samhaxe/modules/Font">
 
@@ -74,12 +75,13 @@ Group: <shx:resources>
    The root XML node defines general attributes and namespaces used through importing.
    
    >  <shx:resources version="9" compress="false" package="resources"
+   >     xmlns:shx="http://mindless-labs.com/samhaxe"
    >     xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
    >     xmlns:font="http://mindless-labs.com/samhaxe/modules/Font">
 
    Every resource description file has a root node called _shx:resources_.
    Every XML node associated with SamHaXe (and not with some of its modules)
-   uses the namespace _shx_. Let's see it's available attrubtes first:
+   uses the namespace _shx_. Let's see its available attrubtes first:
 
    version - Version of the generated SWF file as a numeric value between 1 and
       10 (as of this writing). It has effect on SWF tag generation of import modules
@@ -92,18 +94,20 @@ Group: <shx:resources>
       classes and AS3 class stubs. It's a convenience attribute so you don't
       have to write _my.package.resources_ before every class name.
 
-   Besides the attributes there are two namespace decralations in the root
-   node: _img_ and _font_. You assign an import module to a namespace with
-   a namespace declaration. After that if SamHaXe encounters an XML node with
-   namespace other than _shx_ it'll invoke the appropriate import module for
-   that node. The namespace URI reference and actual import module assignments
-   are in SamHaXe's configuration file called _samhaxe.conf.xml_.
+   Besides the attributes there are two namespace decralations (except shx)
+   in the root node: _img_ and _font_. You assign an import module to a
+   namespace with a namespace declaration. After that if SamHaXe encounters
+   an XML node with namespace other than _shx_ it'll invoke the appropriate
+   import module for that node. The namespace URI reference and actual import
+   module assignments are in SamHaXe's configuration file called _samhaxe.conf.xml_.
+   See <Configuration> for more information.
 
    An import module may support more than one module interface version. If
    you need a specific version of a module you can specify it in the URI as an
    anchor. For example:
 
    >  <shx:resources version="9" compress="false" package="resources"
+   >     xmlns:shx="http://mindless-labs.com/samhaxe"
    >     xmlns:img="http://mindless-labs.com/samhaxe/modules/Image"
    >     xmlns:font="http://mindless-labs.com/samhaxe/modules/Font#1.1">
 

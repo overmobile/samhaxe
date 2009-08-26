@@ -21,6 +21,10 @@
 ## Path to ImageMagick lib directory (for locating CORE_RL_wand_.dll and CORE_RL_wand_.lib)
 #imagemagick.library.path=${imagemagick.path}/lib
 
+#imagemagick.library.name=CORE_RL_wand_
+# or
+#imagemagick.library.name=MagickWand
+
 ## Path to neko installation directory
 #neko.path=c:/program files/motion-twin/neko
 
@@ -37,7 +41,7 @@
 #naturaldocs.path=c:/utilities/NaturalDocs
 
 ## Path to NaturalDocs executalbe
-#natrualdocs.executalbe=c:/utilites/NaturalDocs/NaturalDocs.bat
+#naturaldocs.executalbe=c:/utilites/NaturalDocs/NaturalDocs.bat
 
 ## Base installation path
 #install.path=/usr/local
