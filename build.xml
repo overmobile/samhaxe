@@ -26,7 +26,7 @@
    <property name="freetype.path" location="/usr"/>
    <property name="naturaldocs.path" location="${basedir}"/>
 
-   <condition property="imagemagick.library.name" value="CORE_RL_wand">
+   <condition property="imagemagick.library.name" value="CORE_RL_wand_">
       <os family="windows"/>
    </condition>
    
@@ -66,6 +66,12 @@
       <os family="windows"/>
    </condition>
    <condition property="install.path.config" value="/etc">
+      <os family="unix"/>
+   </condition>
+   <condition property="samhaxe.executable" value="SamHaXe.exe">
+      <os family="windows"/>
+   </condition>
+   <condition property="samhaxe.executable" value="SamHaXe">
       <os family="unix"/>
    </condition>
 
@@ -375,7 +381,7 @@
       <mkdir dir="${install.path.modules}"/>
       <mkdir dir="${install.path.doc}"/>
 
-      <move file="${bindir}/SamHaXe" todir="${install.path.bin}"/>
+      <move file="${bindir}/${samhaxe.executable}" todir="${install.path.bin}"/>
       <copy file="${basedir}/samhaxe.conf.xml.template" tofile="${install.path.config}/samhaxe.conf.xml"/>
       <replace file="${install.path.config}/samhaxe.conf.xml" token="##PATH##" value="${install.path.modules}"/>
       <move todir="${install.path.modules}">
@@ -392,7 +398,7 @@
       <mkdir dir="${distdir}/samhaxe/modules/native"/>
       <mkdir dir="${distdir}/samhaxe/doc"/>
       
-      <copy file="${bindir}/SamHaXe" todir="${distdir}/samhaxe"/>
+      <copy file="${bindir}/${samhaxe.executable}" todir="${distdir}/samhaxe"/>
       <copy file="${basedir}/samhaxe.conf.xml.template" todir="${distdir}/samhaxe"/>
       <copy todir="${distdir}/samhaxe/modules">
          <fileset dir="${bindir.modules}"/>
