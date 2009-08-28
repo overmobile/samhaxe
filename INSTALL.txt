@@ -113,6 +113,21 @@ Configuring ImageMagick under windows:
       C:\Program Files\ImageMagick\modules - Required for sub-modules used by
       ImageMagick.
 
+   Furthermore it looks like that windows binary releases of ImageMagick link
+   to Visual C's runtime libraries so you have to install those too. From
+   ImageMagick's website:
+
+   > If you have any problems, install the
+   > Visual C++ 2008 Redistributable Package (x86) or
+   > Visual C++ 2008 Redistributable Package (x64).
+   > 64-bit Windows requires both packages (x86 & x64).
+
+   Microsoft Visual C++ 2008 SP1 Redistributable Package (x86) -
+      http://www.microsoft.com/downloads/details.aspx?familyid=A5C84275-3B97-4AB7-A40D-3802B2AF5FC2
+
+   Microsoft Visual C++ 2008 SP1 Redistributable Package (x64) -
+      http://www.microsoft.com/downloads/details.aspx?familyid=BA9257CA-337F-4B40-8C14-157CFDFFEE4E
+
 ----------------------------------
 Group: Building SamHaXe
 ----------------------------------
