@@ -36,7 +36,7 @@
       </comp0:compose>
       
       <comp1:alfa_compose>
-         <snd:sound class="BgMusic" import="../assets/sounds/scenes_from_childhood.wav" />
+         <snd:sound class="BgMusic" import="../assets/sounds/scenes_from_childhood.mp3" />
       </comp1:alfa_compose>
    </shx:frame>
 
