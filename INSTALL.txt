@@ -47,28 +47,34 @@ Available options:
 
    imagemagick.include.path - Path to ImageMagick's header files. Required
    for compiling native image module. You can obtain this value undex linux by
-   issuing the command: "pkg-config --cflags-only-I Wand"
+   issuing the command: "pkg-config --cflags-only-I Wand" This is the
+   directory where *Magick++.h* is located.
 
-   imagemagick.library.path - Path to ImageMagick's library files. Relevant
-   only under windows. For MinGW you should give the path to the directory
-   where CORE_RL_wand_.dll is located while for MSVC where CORE_RL_wand_.lib
-   is located.
+   imagemagick.library.path - Path to ImageMagick's shared library files. This is the
+   directory where *CORE_RL_wand_.dll* (MinGW), *CORE_RL_wand_.lib* (MSVC) or
+   *libMagickWand.so* / *libWand.so* / *MagickWand.dylib* (gcc) is located.
    
-   imagemagick.library.name - (CORE_RL_wand_ under windows or Wand under linux)
-   Name of ImageMagick's shared library without any prefix or suffix. You can
-   obtain this value undex linux by issuing the command: "pkg-config
-   --libs-only-l Wand"
+   imagemagick.library.name - Name of ImageMagick's shared library without any
+   prefix or suffix. Typical values are: *CORE_RL_wand_* (MinGW and MSVC),
+   *MagickWand* or *Wand* (gcc)
 
    neko.include.path - Path to neko's include files. Required for all native
-   modules (image and font).
+   modules (image and font). This is the directory where *neko.h* is located.
 
-   neko.library.path - Path to neko's library files. Relevant only under
-   windows. For MinGW you should give the path to the directory where
-   neko.dll is located while for MSVC where neko.lib is located.
+   neko.library.path - Path to neko's library files. This is the directory
+   where *neko.dll* (MinGW), *neko.lib* (MSVC) or *libneko.so* / *neko.dylib*
+   (gcc) is located.
 
-   freetype.path - (_/usr_) Path to freetype's base directory. The default
-   value is /usr which is fine under linux for most distributions. Under
-   windows you should provide the base directory where you installed freetype.
+   freetype.include.path - Path to FreeType's include directory. This is the
+   directory where *ft2build.h* is located.
+
+   freetype.library.path - Path to FreeType's shared library files. This is
+   the directory where *freetype6.dll* (MinGW), *freetype.lib* (MSVC) or
+   *libfreetype.so* / *freetype.dylib* (gcc) is located.
+
+   freetype.library.name - Name of FreeType's shared library without any
+   prefix or suffix. Typical values are: *freetype6* (MinGW) or *freetype*
+   (MSVC or GCC).
 
    naturaldocs.path - (_current working directory_) Path to NaturalDocs' installation
    directory. NaturalDocs will be executed in this directory.

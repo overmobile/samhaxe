@@ -2,45 +2,103 @@
    <description>
       SamHaXe: a flash resource assembly tool
    </description>
+
+   <property name="version" value="1.0-mojito"/>
    
    <property environment="env"/>
-   
+  
+   <!-- OS properties -->
    <condition property="is-windows">
       <os family="windows"/>
    </condition>
    
+   <condition property="is-unix">
+      <and>
+         <os family="unix"/>
+         <not>
+            <os name="Darwin"/>
+         </not>
+      </and>
+   </condition>
+   
+   <condition property="is-osx">
+      <or>
+         <os family="mac"/>
+         <os name="Darwin" family="unix"/>
+      </or>
+   </condition>
+   
+   <!-- haXe define for OS -->
    <condition property="haxe.os" value="WINDOWS">
-      <os family="windows"/>
+      <isset property="is-windows"/>
    </condition>
    
    <condition property="haxe.os" value="UNIX">
-      <os family="unix"/>
+      <isset property="is-unix"/>
    </condition>
    
+   <condition property="haxe.os" value="OSX">
+      <isset property="is-osx"/>
+   </condition>
+   
+   <!-- include config.ant -->
    <property file="config.ant"/>
    
+   <!-- defaults for all configuration values -->
    <property name="haxe.path" location="${env.HAXEPATH}"/>
    <property name="haxe.stdpath" location="${haxe.path}/std"/>
    <property name="haxe.debug" value="false"/>
    <property name="cpp.compiler" value="g++"/>
-   <property name="freetype.path" location="/usr"/>
-   <property name="naturaldocs.path" location="${basedir}"/>
-
-   <condition property="imagemagick.library.name" value="CORE_RL_wand_">
-      <os family="windows"/>
-   </condition>
    
-   <condition property="imagemagick.library.name" value="Wand">
-      <os family="unix"/>
-   </condition>
-   
+   <!-- compiler properties -->
    <condition property="is-gcc">
       <equals arg1="${cpp.compiler}" arg2="g++"/>
    </condition>
-   
    <condition property="is-msvc">
       <equals arg1="${cpp.compiler}" arg2="msvc"/>
    </condition>
+   <condition property="is-mingw">
+      <and>
+         <isset property="is-windows"/>
+         <isset property="is-gcc"/>
+      </and>
+   </condition>
+
+   <property name="naturaldocs.path" location="${basedir}"/>
+
+   <property name="imagemagick.include.path" value="."/>
+   <property name="imagemagick.library.path" value="."/>
+
+   <condition property="imagemagick.library.name" value="CORE_RL_wand_">
+      <isset property="is-windows"/>
+   </condition>
+   
+   <condition property="imagemagick.library.name" value="Wand">
+      <or>
+         <isset property="is-unix"/>
+         <isset property="is-osx"/>
+      </or>
+   </condition>
+
+   <property name="neko.include.path" value="."/>
+   <property name="neko.library.path" value="."/>
+
+   <condition property="freetype.include.path" value="/usr/include">
+      <or>
+         <isset property="is-unix"/>
+         <isset property="is-osx"/>
+      </or>
+   </condition>
+   <property name="freetype.inclue.path" value="."/>
+   <property name="freetype.library.path" value="."/>
+   
+   <condition property="freetype.library.name" value="freetype6">
+      <and>
+         <isset property="is-windows"/>
+         <isset property="is-gcc"/>
+      </and>
+   </condition>
+   <property name="freetype.library.name" value="freetype"/>
    
    <condition property="haxe.debug.arg" value="-debug -D DEBUG">
       <equals arg1="${haxe.debug}" arg2="true"/>
@@ -51,35 +109,48 @@
    </condition>
       
    <condition property="naturaldocs.executable" value="${naturaldocs.path}/NaturalDocs.bat">
-      <os family="windows"/>
+      <isset property="is-windows"/>
    </condition>
    
    <condition property="naturaldocs.executable" value="NaturalDocs">
-      <os family="unix"/>
+      <or>
+         <isset property="is-unix"/>
+         <isset property="is-osx"/>
+      </or>
    </condition>
 
    <property name="install.path" location="/usr/local"/>
    <property name="install.path.bin" location="${install.path}/bin"/>
    <property name="install.path.modules" location="${install.path}/lib/samhaxe"/>
    <property name="install.path.doc" location="${install.path}/doc/samhaxe"/>
+
    <condition property="install.path.config" value="${install.path.bin}">
-      <os family="windows"/>
+      <isset property="is-windows"/>
    </condition>
    <condition property="install.path.config" value="/etc">
-      <os family="unix"/>
-   </condition>
-   <condition property="samhaxe.executable" value="SamHaXe.exe">
-      <os family="windows"/>
-   </condition>
-   <condition property="samhaxe.executable" value="SamHaXe">
-      <os family="unix"/>
+      <or>
+         <isset property="is-unix"/>
+         <isset property="is-osx"/>
+      </or>
    </condition>
 
+   <condition property="samhaxe.executable" value="SamHaXe.exe">
+      <isset property="is-windows"/>
+   </condition>
+   <condition property="samhaxe.executable" value="SamHaXe">
+      <or>
+         <isset property="is-unix"/>
+         <isset property="is-osx"/>
+      </or>
+   </condition>
+
+   <!-- include external task definitions -->
    <taskdef resource="net/wildwinter/anthx/anthx.properties" classpath="${basedir}/lib/AntHX.jar"/>
    <taskdef resource="cpptasks.tasks" classpath="${basedir}/lib/cpptasks.jar"/>
    
    <haxeEnv haxePath="${haxe.path}"/>
   
+   <!-- directory properties -->
    <property name="srcdir" location="${basedir}/src"/>
    <property name="srcdir.modules" location="${srcdir}/modules"/>
    <property name="srcdir.native" location="${srcdir}/modules/native"/>
@@ -97,18 +168,14 @@
    <property name="naturaldocs.dir" location="${basedir}/NaturalDocs"/>
    <property name="naturaldocs.datadir" location="${naturaldocs.dir}/Data"/>
    
-   <path id="freetype.include">
-      <pathelement location="${freetype.path}/include"/>
-      <pathelement location="${freetype.path}/include/freetype2"/>
-   </path>
-   
    <path id="project.classpath">
       <pathelement location="${haxe.stdpath}"/>
       <pathelement location="${basedir}/lib/hxformat"/>
       <pathelement location="${srcdir}"/>
    </path>
-   
-   <target name="init">
+  
+   <!-- -init target: create directory structure -->
+   <target name="-init">
       <mkdir dir="${objdir}"/>
       <mkdir dir="${bindir}"/>
       <mkdir dir="${bindir.modules}"/>
@@ -119,7 +186,8 @@
       <mkdir dir="${demodir.bin.apps}"/>
    </target>
 
-   <target name="samhaxe" depends="init, modules" description="compile SamHaXe">
+   <!-- samhaxe target: build Sam HaXe and its modules -->
+   <target name="samhaxe" depends="-init, modules" description="compile SamHaXe">
       <echo message="Building SamHaXe"/>
       <haxe2neko dir="${srcdir}" main="SamHaXe" out="${bindir}/SamHaXe.n" objdir="${objdir}">
          <classpath refid="project.classpath"/>
@@ -136,7 +204,8 @@
       <replace file="${bindir}/samhaxe.conf.xml" token="##PATH##" value="${bindir.modules}"/>
    </target>
 
-   <target name="modules" depends="init, native" description="compile SamHaXe modules">
+   <!-- modules target: modules and native modules -->
+   <target name="modules" depends="-init, native" description="compile SamHaXe modules">
       <echo message="Building Binary.n"/>
       <haxe2neko dir="${srcdir.modules}" main="Binary" out="${bindir.modules}/Binary.n" objdir="${objdir}">
          <classpath refid="project.classpath"/>
@@ -181,58 +250,78 @@
 
    </target>
 
+   <!-- -native-image target: build native image module -->
    <target name="-native-image">
-      <cc name="${cpp.compiler}" subsystem="console" debug="false" link="shared" objdir="${objdir}" outfile="${objdir}/image">
+      <cc name="${cpp.compiler}" subsystem="console" debug="false" outtype="shared" objdir="${objdir}" outfile="${objdir}/image">
          <fileset file="${srcdir.native}/image.cpp"/>
          <compilerarg value="/EHsc" if="is-msvc"/>
          <includepath>
             <pathelement location="${imagemagick.include.path}"/>
             <pathelement location="${neko.include.path}"/>
          </includepath>
-         
-         <libset dir="${imagemagick.library.path}" type="shared" libs="${imagemagick.library.name}" if="is-msvc"/>
-         <libset dir="${neko.library.path}" type="shared" libs="neko" if="is-msvc"/>
-         
-         <linker name="g++" if="is-gcc">
-            <linkerarg value="${imagemagick.library.path}/${imagemagick.library.name}.dll" if="is-windows"/>
-            <linkerarg value="${neko.library.path}/neko.dll" if="is-windows"/>
             
-            <libset type="shared" libs="${imagemagick.library.name}" unless="is-windows"/>
-            <libset type="shared" libs="neko" unless="is-windows"/>
+         <linker name="g++" unless="is-msvc">
+            <!-- Hack for some OSX variants where cpptasks doesn't correctly indentify OS -->
+            <linkerarg value="-dynamiclib" if="is-osx"/>
+
+            <libset dir="${imagemagick.library.path}" libs="${imagemagick.library.name}" unless="is-mingw"/>
+            <libset dir="${neko.library.path}" libs="neko" unless="is-mingw"/>
+            
+            <!-- Link directly to DLLs in case of MinGW -->
+            <linkerarg value="${imagemagick.library.path}/${imagemagick.library.name}.dll" if="is-mingw"/>
+            <linkerarg value="${neko.library.path}/neko.dll" if="is-mingw"/>
          </linker>
+         
+         <linker name="msvc" if="is-msvc">
+            <libset dir="${imagemagick.library.path}" type="shared" libs="${imagemagick.library.name}"/>
+            <libset dir="${neko.library.path}" type="shared" libs="neko"/>
+         </linker>
+
       </cc>
       <move file="${objdir}/image.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
       <move file="${objdir}/libimage.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/image.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
    </target>
    
+   <!-- -native-font target: build native font module -->
    <target name="-native-font">
       <cc name="${cpp.compiler}" subsystem="console" debug="false" link="shared" objdir="${objdir}" outfile="${objdir}/font">
          <fileset file="${srcdir.native}/font.cpp"/>
          <compilerarg value="/EHsc" if="is-msvc"/>
          <includepath>
-            <path refid="freetype.include"/>
+            <pathelement location="${freetype.include.path}"/>
+            <pathelement location="${freetype.include.path}/freetype2"/>
+            <pathelement location="${freetype.include.path}/freetype2/freetype"/>
             <pathelement location="${neko.include.path}"/>
          </includepath>
+
+         <linker name="g++" unless="is-msvc">
+            <!-- Hack for some OSX variants where cpptasks doesn't correctly indentify OS -->
+            <linkerarg value="-dynamiclib" if="is-osx"/>
          
-         <libset dir="${freetype.path}/lib" type="shared" libs="freetype" if="is-msvc"/>
-         <libset dir="${neko.library.path}" type="shared" libs="neko" if="is-msvc"/>
+            <libset dir="${freetype.library.path}" libs="${freetype.library.name}" unless="is-mingw"/>
+            <libset dir="${neko.library.path}" libs="neko" unless="is-mingw"/>
          
-         <linker name="g++" if="is-gcc">
-            <linkerarg value="${freetype.path}/bin/freetype6.dll" if="is-windows"/>
-            <linkerarg value="${neko.library.path}/neko.dll" if="is-windows"/>
-            
-            <libset type="shared" libs="freetype" unless="is-windows"/>
-            <libset type="shared" libs="neko" unless="is-windows"/>
+            <!-- Link directly to DLLs in case of MinGW -->
+            <linkerarg value="${freetype.library.path}/${freetype.library.name}.dll" if="is-mingw"/>
+            <linkerarg value="${neko.library.path}/neko.dll" if="is-mingw"/>
+         </linker>
+
+         <linker name="msvc" if="is-msvc">
+            <libset dir="${freetype.library.path}" type="shared" libs="${freetype.library.name}"/>
+            <libset dir="${neko.library.path}" type="shared" libs="neko"/>
          </linker>
       </cc>
       <move file="${objdir}/font.dll" tofile="${bindir.native}/font.ndll" failonerror="false"/>
       <move file="${objdir}/libfont.so" tofile="${bindir.native}/font.ndll" failonerror="false"/>
+      <move file="${objdir}/font.dylib" tofile="${bindir.native}/font.ndll" failonerror="false"/>
    </target>
 
-   
-   <target name="native" depends="init, -native-image, -native-font" description="compile native modules">
+   <!-- native target: build native image and font modules -->
+   <target name="native" depends="-init, -native-image, -native-font" description="compile native modules">
    </target>
    
+   <!-- clean target: restore project to its inital state -->
    <target name="clean" description="clean up binaries, documentation and temporary files">
       <delete dir="${objdir}"/>
       <delete dir="${bindir}"/>
@@ -241,7 +330,8 @@
       <delete dir="${demodir.bin}"/>
    </target>
 
-   <target name="doc" depends="init" description="build documentation">
+   <!-- doc target: build documentation -->
+   <target name="doc" depends="-init" description="build documentation">
       <exec dir="${naturaldocs.path}" executable="${naturaldocs.executable}">
          <arg value="-i"/>
          <arg value="${basedir}"/>
@@ -256,6 +346,7 @@
       </exec>
    </target>
 
+   <!-- demos target: build sample asset libs and apps -->
    <target name="demos" depends="samhaxe" description="build demo asset libraries and applications">
       <echo message="Building AllDemo"/>
       <exec executable="${bindir}/SamHaXe" dir="${demodir}/AllDemo">
@@ -376,6 +467,7 @@
 
    </target>
 
+   <!-- install target: install Sam HaXe and all of its components -->
    <target name="install" depends="samhaxe, doc" description="install SamHaXe and documentation">
       <mkdir dir="${install.path.bin}"/>
       <mkdir dir="${install.path.modules}"/>
@@ -392,24 +484,29 @@
       </move>
    </target>
 
+   <!-- dist target: build a binary distribution compressed with zip -->
    <target name="dist" depends="samhaxe, doc" description="build binary distribution">
-      <mkdir dir="${distdir}/samhaxe"/>
-      <mkdir dir="${distdir}/samhaxe/modules"/>
-      <mkdir dir="${distdir}/samhaxe/modules/native"/>
-      <mkdir dir="${distdir}/samhaxe/doc"/>
+      <delete includeemptydirs="true">
+         <fileset dir="${distdir}" includes="**/*"/>
+      </delete>
+
+      <property name="distdir.samhaxe" location="${distdir}/samhaxe-${version}"/>
+
+      <mkdir dir="${distdir.samhaxe}"/>
+      <mkdir dir="${distdir.samhaxe}/modules"/>
+      <mkdir dir="${distdir.samhaxe}/modules/native"/>
+      <mkdir dir="${distdir.samhaxe}/doc"/>
       
-      <copy file="${bindir}/${samhaxe.executable}" todir="${distdir}/samhaxe"/>
-      <copy file="${basedir}/samhaxe.conf.xml.template" todir="${distdir}/samhaxe"/>
-      <copy todir="${distdir}/samhaxe/modules">
+      <copy file="${bindir}/${samhaxe.executable}" todir="${distdir.samhaxe}"/>
+      <copy file="${basedir}/samhaxe.conf.xml.template" todir="${distdir.samhaxe}"/>
+      <copy todir="${distdir.samhaxe}/modules">
          <fileset dir="${bindir.modules}"/>
       </copy>
-      <copy todir="${distdir}/samhaxe/doc">
+      <copy todir="${distdir.samhaxe}/doc">
          <fileset dir="${docdir}"/>
       </copy>
-      <zip destfile="${distdir}/samhaxe.zip">
-         <fileset dir="${distdir}/samhaxe"/>
-      </zip>
+      <zip basedir="${distdir}" destfile="${distdir}/samhaxe-${version}.zip"/>
 
-      <delete dir="${distdir}/samhaxe"/>
+      <delete dir="${distdir.samhaxe}"/>
    </target>
 </project>

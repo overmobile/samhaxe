@@ -18,12 +18,13 @@
 ## Path to ImageMagick include directory
 #imagemagick.include.path=${imagemagick.path}/include
 
-## Path to ImageMagick lib directory (for locating CORE_RL_wand_.dll and CORE_RL_wand_.lib)
+## Path to ImageMagick library directory (for locating CORE_RL_wand_.dll, CORE_RL_wand_.lib, etc.)
 #imagemagick.library.path=${imagemagick.path}/lib
 
+## Name of ImageMagick shared library
 #imagemagick.library.name=CORE_RL_wand_
-# or
 #imagemagick.library.name=MagickWand
+#imagemagick.library.name=Wand
 
 ## Path to neko installation directory
 #neko.path=c:/program files/motion-twin/neko
@@ -31,11 +32,20 @@
 ## Path to neko include directory
 #neko.include.path=${neko.path}/include
 
-## Path to neko lib directory (for locating neko.dll and neko.lib)
+## Path to neko library directory (for locating neko.dll, neko.lib, etc.)
 #neko.library.path=${neko.path}
 
 ## Path to FreeType2 installation directory
 #freetype.path=c:/libraries/freetype
+
+## Path to FreeType2 inlcude directory (the one where ft2build.h resides)
+#freetype.include.path=${freetype.path}/include
+
+## Path to FreeType2 library directory (for locating freetype6.dll, freetype.lb, etc.)
+#freetype.library.path=${freetype.path}/lib
+
+## Name of FreeType shared library
+#freetype.library.name=freetype
 
 ## Path to NaturalDocs installation directory
 #naturaldocs.path=c:/utilities/NaturalDocs
