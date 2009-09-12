@@ -134,7 +134,7 @@ class Swf {
       if (!isLib) {
          var id = moduleService_1_0.getIdRegistry().getNewId();
          var package_name = moduleService_1_0.getVariableRegistry().getVariable("package");
-         var class_name = if(package_name.length > 0) package_name + "." + swf_elem.x.get("class");
+         var class_name = (if(package_name.length > 0) package_name + "." else "") + swf_elem.x.get("class");
          
          moduleService_1_0.getSymbolRegistry().addSymbol(id, class_name);
          

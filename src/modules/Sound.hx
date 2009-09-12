@@ -190,7 +190,7 @@ class Sound {
       // Request an id, also check for multiple imports 
       
       var package_name = moduleService_1_0.getVariableRegistry().getVariable("package");
-      var class_name = if(package_name.length > 0) package_name + "." + sound.x.get("class");
+      var class_name = (if(package_name.length > 0) package_name + "." else "") + sound.x.get("class");
       var symReg = moduleService_1_0.getSymbolRegistry();
 
       // Get SID
