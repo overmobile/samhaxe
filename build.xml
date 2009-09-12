@@ -189,7 +189,7 @@
    <!-- samhaxe target: build Sam HaXe and its modules -->
    <target name="samhaxe" depends="-init, modules" description="compile SamHaXe">
       <echo message="Building SamHaXe"/>
-      <haxe2neko dir="${srcdir}" main="SamHaXe" out="${bindir}/SamHaXe.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir}" main="SamHaXe" out="${bindir}/SamHaXe.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
@@ -207,42 +207,42 @@
    <!-- modules target: modules and native modules -->
    <target name="modules" depends="-init, native" description="compile SamHaXe modules">
       <echo message="Building Binary.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Binary" out="${bindir.modules}/Binary.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Binary" out="${bindir.modules}/Binary.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
       </haxe2neko>
       
       <echo message="Building Image.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Image" out="${bindir.modules}/Image.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Image" out="${bindir.modules}/Image.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
       </haxe2neko>
       
       <echo message="Building Sound.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Sound" out="${bindir.modules}/Sound.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Sound" out="${bindir.modules}/Sound.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
       </haxe2neko>
       
       <echo message="Building Compose.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Compose" out="${bindir.modules}/Compose.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Compose" out="${bindir.modules}/Compose.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
       </haxe2neko>
       
       <echo message="Building Font.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Font" out="${bindir.modules}/Font.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Font" out="${bindir.modules}/Font.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>
       </haxe2neko>
       
       <echo message="Building Swf.n"/>
-      <haxe2neko dir="${srcdir.modules}" main="Swf" out="${bindir.modules}/Swf.n" objdir="${objdir}">
+      <haxe2neko dir="${srcdir.modules}" main="Swf" out="${bindir.modules}/Swf.n" cacheFolder="${objdir}">
          <classpath refid="project.classpath"/>
          <arg line="${haxe.debug.arg}"/>
          <arg line="-D ${haxe.os}"/>

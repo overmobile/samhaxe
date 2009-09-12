@@ -10,6 +10,25 @@ Section: "I used to be a spy, until..."
    Burn Notice is a series about spies - and what do flash developers  
    and spies have in common? They need assets. Assets are very important.
 
+----------------------------
+Section: Tools of the trade
+----------------------------
+   What does Sam HaXe good for? 
+
+   Basically Sam HaXe is a flash resource assembly tool similar to swfmill
+   (http://swfmill.org). Currently you can import the following types of assets
+   with it:
+
+   - *Image files*: Every type supported by ImageMagick See the complete list
+     here: http://www.imagemagick.org/script/formats.php
+
+   - *Sound files*: MP3s, WAVs
+   
+   - *TrueType fonts*
+
+   - *SWF files*: As an animation or as an external library.
+   - *Binary files*: Arbitrary content with optional zlib compression.
+
 ------------------
 Section: Features
 ------------------
@@ -85,6 +104,9 @@ Section: Authors
    We are:
 
    Robin Palotai /Ron/ - ron@mindless-labs.com
-   Gábor Szuromi /KukkerMan/ - kukkerman@mindless-labs.com
+   Gábor Szuromi /Gabe/ - gabe@mindless-labs.com
+
+   Special thanks to *Niel Drummond* for his invaluable contribution to OSX
+   support.
 
    Feel free to contact us!:

@@ -94,10 +94,19 @@ class Font {
 
    public function new() {
    }
-   
+
+   function validateRangeAttrib(attr: String) {
+      if((neko.Utf8.length(attr) != 4) ||
+         neko.Utf8.charCodeAt(attr, 1) != 46 || neko.Utf8.charCodeAt(attr, 2) != 46)
+         throw "Invalid range attribute format: '" + attr + "'";
+
+      if(neko.Utf8.charCodeAt(attr, 0) > neko.Utf8.charCodeAt(attr, 3))
+         throw "Invalid range attribute: '" + attr + "'. First character code should be less or equal than second!";
+   }
+
    public function check_font_1_0(font: NsFastXml): Void {
       var ns = font.ns + ":";
-
+     
       var font_rule = RNode(ns + "ttf", [
             // Root node attributes
             Att("import"),
@@ -110,11 +119,13 @@ class Font {
          ROptional(RNode(ns + "characters", null,
             RMulti(RChoice([
                RNode(ns + "include", [
-                  Att("range", FReg(~/^.\.\..$/), ""),
+                  //Att("range", FReg(~/^.\.\..$/), ""),
+                  Att("range", null, ""),
                   Att("characters", null, "")
                ]),
                RNode(ns + "exclude", [
-                  Att("range", FReg(~/^.\.\..$/), ""),
+                  //Att("range", FReg(~/^.\.\..$/), ""),
+                  Att("range", null, ""),
                   Att("characters", null, "")
                ])
             ]))
@@ -122,6 +133,16 @@ class Font {
       );
 
       haxe.xml.Check.checkNode(font.x, font_rule);
+
+      if(font.hasLNode.characters) {
+         for(n in font.lnode.characters.lnodes.include)
+            if(n.has.range && n.att.range.length > 0)
+               validateRangeAttrib(n.att.range);
+         
+         for(n in font.lnode.characters.lnodes.exclude)
+            if(n.has.range && n.att.range.length > 0)
+               validateRangeAttrib(n.att.range);
+      }
    }
    
    public function import_font_1_0(font_node: NsFastXml, options: Hash<String>): Array<SWFTag> {
@@ -151,6 +172,11 @@ class Font {
       var glyph_layout = new Array<FontLayoutGlyphData>();
 
       for(native_glyph in font.glyphs) {
+         if(native_glyph.char_code > 65535) {
+            neko.Lib.println("Warning: glyph with character code greater than 65535 encountered ("+native_glyph.char_code+"). Skipping...");
+            continue;
+         }
+
          var shapeRecords = new Array<ShapeRecord>();
          var i: Int = 0;
          var styleChanged: Bool = false;
@@ -344,8 +370,8 @@ class Font {
          var set: Bool = (n.lname == "include");
          
          if(n.has.range && n.att.range.length > 0) {
-            var from_char = n.att.range.charCodeAt(0);
-            var to_char = n.att.range.charCodeAt(3);
+            var from_char = neko.Utf8.charCodeAt(n.att.range, 0);
+            var to_char = neko.Utf8.charCodeAt(n.att.range, 3);
             for(i in from_char...to_char+1) {
                h.set(i, set);
             }
@@ -353,9 +379,9 @@ class Font {
 
          if(n.has.characters && n.att.characters.length > 0) {
             var s = n.att.characters;
-            for(i in 0...s.length) {
-               h.set(s.charCodeAt(i), set);
-            }
+            neko.Utf8.iter(n.att.characters, function(code: Int) {
+               h.set(code, set);
+            });
          }
       }
 
