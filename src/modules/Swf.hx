@@ -486,7 +486,7 @@ class Swf {
             //
             case TBackgroundColor(c):
 
-            case TSandBox(v):
+            case TSandBox(_,_,_,_,_):
 
             //
             // Special handling

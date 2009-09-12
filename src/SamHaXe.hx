@@ -359,6 +359,13 @@ class SamHaXe implements IdRegistry, implements SymbolRegistry, implements AS3Re
          nframes: r_fast.qnodes(SHX_NS, "frame").length
       });
       
+      swf_writer.writeTag(TSandBox(
+         false,   // Fp10 direct blit
+         false,   // Fp10 use gpu
+         true,    // Fp10 HasMeta, Fp9 UseSymbolClass
+         true,    // UseAs3
+         false    // UseNetwork
+      ));
 
       for(frame in r_fast.qnodes(SHX_NS, "frame")) {
          frame_symbols = null;
