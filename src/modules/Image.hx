@@ -356,7 +356,8 @@ class Image {
       }
 
       var cmodel = switch(img.bits) {
-         case 8:  CM8Bits(img.colors);
+         // BitsLossless2 expects a value less than the actual used colors.
+         case 8:  CM8Bits(img.colors - 1);
          case 32: CM32Bits;
          default: throw "Invalid color model (BPP = "+img.bits+")";
       };
@@ -371,6 +372,9 @@ class Image {
       var as3Reg = moduleService_1_0.getAS3Registry();
       var symReg = moduleService_1_0.getSymbolRegistry();
 
+      var w: Int = img.width;
+      var h: Int = img.height;
+      
       var cid: Int;
       var hashIdRes = Helpers.getIdForHashSymbolWarn(
          getLosslessHashBase(

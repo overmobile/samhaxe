@@ -59,9 +59,13 @@ extern "C" value import_image(value image_file) {
    Image                *img = GetImageFromMagickWand(wand);
    int                  width = MagickGetImageWidth(wand);
    int                  height = MagickGetImageHeight(wand);
+   int                  img_type = MagickGetImageType(wand);
    int                  img_size;
    unsigned char        *img_data;
    int                  bpp;
+   // No alpha channel so every alpha value will be zero which results a complete transparent image.
+   // I love you ImageMagick...
+   bool                 no_alpha = (img_type == GrayscaleType || img_type == PaletteType || img_type == TrueColorType);
 
    int                  i;
    int                  pixels;
@@ -88,19 +92,21 @@ extern "C" value import_image(value image_file) {
       unsigned char  *palette, *indices;
       int            row_padding = (4 - (width & 3)) & 3;
 
+      alloc_field(ret, val_id("colors"), alloc_int(colors));
+      
       img_size = colors * 4 + (width + row_padding) * height;
       img_data = new unsigned char[img_size];
       bpp = 8;
 
       palette = img_data;
       indices = img_data + colors * 4;
-
+      
       // Store palette
       std::set<uint32_t>::iterator        ci, ci_end;
       for (ci = color_set.begin(), ci_end = color_set.end(); ci != ci_end; ci++) {
          uint32_t          color = *ci;
-         int               alpha = color & 0xff;
-
+         int               alpha = no_alpha ? 255 : color & 0xff;
+         
          palette[0] = ((color >> 8)  & 0xff) * alpha / 255;
          palette[1] = ((color >> 16) & 0xff) * alpha / 255;
          palette[2] = ((color >> 24) & 0xff) * alpha / 255;
@@ -130,10 +136,7 @@ extern "C" value import_image(value image_file) {
       img_data = argb_data;
       bpp = 32;
 
-      int      img_type = MagickGetImageType(wand);
-
-      if (img_type == GrayscaleType || img_type == PaletteType || img_type == TrueColorType) {
-         // No alpha channel so every alpha value in argb_data will be zero. I love you ImageMagick...
+      if(no_alpha) {
          for (i = 0; i < pixels; i++) {
             argb_data[0] = 255;
             argb_data += 4;
