@@ -413,6 +413,26 @@
          <arg line="-D ${haxe.os}"/>
       </haxe>
 
+      <echo message="Building RuntimeFontLoadingDemo"/>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/RuntimeFontLoadingDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="pre_resources.xml"/>
+         <arg value="${demodir.bin.assets}/fontcontainer.swf"/>
+      </exec>
+      <exec executable="${bindir}/SamHaXe" dir="${demodir}/RuntimeFontLoadingDemo">
+         <arg value="-c"/>
+         <arg value="${bindir}/samhaxe.conf.xml"/>
+         <arg value="resources.xml"/>
+         <arg value="${demodir.bin.assets}/fontloader.swf"/>
+      </exec>
+      <haxe dir="${demodir}/RuntimeFontLoadingDemo" hxml="build.hxml">
+         <classpath refid="project.classpath"/>
+         <arg line="${haxe.debug.arg}"/>
+         <arg line="-D ${haxe.os}"/>
+      </haxe>
+
+
       <echo message="Building ImageDemo"/>
       <exec executable="${bindir}/SamHaXe" dir="${demodir}/ImageDemo">
          <arg value="-c"/>

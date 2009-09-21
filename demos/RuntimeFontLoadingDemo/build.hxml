@@ -1,0 +1,8 @@
+-swf ../bin/apps/fontloader.swf
+-swf-header 600:200:20:ffffff
+-swf-version 9
+-swf-lib ../bin/assets/fontloader.swf
+-debug
+--flash-strict
+-main RuntimeFontLoadingDemo
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shx:resources version="9" compress="false" package="resources.classes"
+   xmlns:shx="http://mindless-labs.com/samhaxe"
+   xmlns:bin="http://mindless-labs.com/samhaxe/modules/Binary">
+
+   <!--
+      Here we compile the swf as a binary object into our asset lib
+      only for the demo to be able to load it with loadBytes.
+
+      In the real world, your application would load fontcontainer.swf
+      directly from the internet (for example).
+
+      Note that the "class" attribute is supplied.
+   -->
+   <shx:frame>
+      <bin:binary class="FontContainerSwf" import="../bin/assets/fontcontainer.swf" />
+   </shx:frame>
+
+</shx:resources>
+

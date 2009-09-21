@@ -11,7 +11,13 @@
 
    Optional attributes:
       language - (_none_, latin, japanese, korean, simpleChinese, traditionalChinese)
-         Language code to include in font definition.
+         Language code to include in font definition. 
+      class - Class name assigned to imported data. Useful for runtime font loading (see RuntimeFontLoadingDemo).
+      genclass - (false, symbolOnly, _symbolAndClass_) Controls the generation of symbols and AS3 class stubs.
+         Available values are:
+            *false* (don't generate neither symbol nor AS3 class stub),
+            *symbolOnly* (generate only symbol),
+            *symbolAndClass* (generate symbol and AS3 class stub)
 
    Child nodes:
       <ttf>'s child nodes specify which characters to import from the font file. If <ttf> doesn't have
@@ -30,8 +36,8 @@
    Optional attributes:
       range - Range of characters in the form: *firstCharacter..lastCharacter*
       characters - Individual characters in arbitrary order
-
-   Example:
+     
+   Example 1:
       Assuming that Font import module is assigned to namespace _font_ the following snippet imports
       the even numbers and the letters _abxyz_ from _arial.ttf_ and names the font _Arial_.
      
@@ -41,6 +47,31 @@
          <exclude characters="13579"/>
          <include characters="abxyz"/>
       </font>
+      (end) 
+      
+   Example 2:
+      For runtime font loading support, class stub can be generated for the font by
+      specifying a class name.
+     
+      (code)
+      <font:ttf import="arial.ttf" class="ArialClass" name="Arial">
+         <include range="0..9"/>
+         <exclude characters="13579"/>
+         <include characters="abxyz"/>
+      </font>
+      (end)
+
+      After loading an swf containing such a font with _flash.display.Loader_,
+      you can register the font for usage like this (example in Haxe, but
+      AS3 would be similar):
+
+      (code)
+      var fontClass: Class<Font> = loadedMovieClip.applicationDomain.getDefinition("the.package.ArialClass");
+      Font.registerFont(fontClass);
+      ...
+      var tf = new flash.text.TextField();
+      tf.embedFonts = true;
+      tf.defaultTextFormat = new flash.text.TextFormat("Arial", 14);
       (end)
 */
 
@@ -92,6 +123,8 @@ class Font {
    
    var moduleService_1_0 : ModuleService_1_0;
 
+   static var superclass: String = "flash.text.Font";
+
    public function new() {
    }
 
@@ -111,6 +144,15 @@ class Font {
             // Root node attributes
             Att("import"),
             Att("name"),
+            Att("class", null, ""),
+            Att("genclass",
+               FEnum([
+                  SamHaXeModule.GENCLASS_FALSE, 
+                  SamHaXeModule.GENCLASS_SYMBOL_ONLY, 
+                  SamHaXeModule.GENCLASS_SYMBOL_AND_CLASS
+               ]), 
+               SamHaXeModule.GENCLASS_SYMBOL_AND_CLASS
+            ),
 
             Att("language", FEnum(["none", "latin", "japanese", "korean", "simpleChinese", "traditionalChinese"]), "none"),
          ],
@@ -154,6 +196,15 @@ class Font {
       var font_file = font_node.x.get("import");
       var font_name = font_node.att.name;
       
+      var package_name = moduleService_1_0.getVariableRegistry().getVariable("package");
+      var cls_name = font_node.x.get("class");
+      var class_name = ((package_name.length > 0) ? package_name + "." : "") + cls_name;
+
+      var should_gen_class = cls_name != "" &&
+         (!font_node.has.genclass || font_node.att.genclass == SamHaXeModule.GENCLASS_SYMBOL_AND_CLASS);
+      var should_store_symbol = cls_name != "" &&
+         should_gen_class || font_node.att.genclass == SamHaXeModule.GENCLASS_SYMBOL_ONLY;
+
       var swf_em: Int = if(swf_ver < 9) 1024 else 1024 * 20;
       var font: NativeFontData = null;
       
@@ -275,6 +326,15 @@ class Font {
          default:
             LangCode.LCNone;
       };
+
+      //
+      // Register class and symbol is needed
+      //
+      if (should_store_symbol)
+         moduleService_1_0.getSymbolRegistry().addSymbol(id, class_name);
+
+      if (should_gen_class)
+         Helpers.generateClass(moduleService_1_0.getAS3Registry(), class_name, superclass);
 
       return [
          if(swf_ver < 9)
