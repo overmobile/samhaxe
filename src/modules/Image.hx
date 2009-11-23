@@ -342,9 +342,6 @@ class Image {
    }
 
    function load_lossless(image: NsFastXml): Array<SWFTag> {
-      if(moduleService_1_0.getFlashVersion() < 3)
-         throw "Importing lossless images with alpha channel requires flash version 3 or higher!";
-
       var image_file = image.x.get("import");
       var import_fn = neko.Lib.load("image", "import_image", 1);
       var img = null;
@@ -355,9 +352,19 @@ class Image {
          throw "Could not import file '" + image_file + "', reason:\n" + Helpers.tabbed(e.toString());
       }
 
+      if(img.alpha) {
+         if(moduleService_1_0.getFlashVersion() < 3)
+            throw "Importing lossless images with alpha channel requires flash version 3 or higher!";
+
+      } else {
+         if(moduleService_1_0.getFlashVersion() < 2)
+            throw "Importing lossless images requires flash version 2 or higher!";
+      }
+
       var cmodel = switch(img.bits) {
          // BitsLossless2 expects a value less than the actual used colors.
          case 8:  CM8Bits(img.colors - 1);
+         case 24: CM24Bits;
          case 32: CM32Bits;
          default: throw "Invalid color model (BPP = "+img.bits+")";
       };
@@ -384,7 +391,7 @@ class Image {
             // Use uncompressed data for hashing!
             img_data
          ),
-         TagId.DefineBitsLossless2,
+         if(img.alpha) TagId.DefineBitsLossless2 else TagId.DefineBitsLossless,
          moduleService_1_0.getIdRegistry(),
          symReg,
          class_name,
@@ -414,13 +421,24 @@ class Image {
       
       moduleService_1_0.getDependencyRegistry().addFilePath(image_file);
 
-      return [TBitsLossless2({
-            cid:     cid,
-            color:   cmodel,
-            width:   img.width,
-            height:  img.height,
-            data:    format.tools.Deflate.run(img_data)
-      })];
+      return [
+         if(img.alpha)
+            TBitsLossless2({
+               cid:     cid,
+               color:   cmodel,
+               width:   img.width,
+               height:  img.height,
+               data:    format.tools.Deflate.run(img_data)
+            })
+         else
+            TBitsLossless({
+               cid:     cid,
+               color:   cmodel,
+               width:   img.width,
+               height:  img.height,
+               data:    format.tools.Deflate.run(img_data)
+            })
+      ];
    }
 
 

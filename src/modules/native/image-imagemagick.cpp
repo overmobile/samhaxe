@@ -76,6 +76,8 @@ extern "C" value import_image(value image_file) {
    value                ret = alloc_object(NULL);
    alloc_field(ret, val_id("width"), alloc_int(width));
    alloc_field(ret, val_id("height"), alloc_int(height));
+   // Always create an image with alpha channel.
+   alloc_field(ret, val_id("alpha"), alloc_bool(true));
 
    pixels = width * height;
    argb_data = new unsigned char[pixels * 4];

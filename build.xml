@@ -66,18 +66,70 @@
 
    <property name="naturaldocs.path" location="${basedir}"/>
 
-   <property name="imagemagick.include.path" value="."/>
-   <property name="imagemagick.library.path" value="."/>
+   <property name="image.module" value="imagemagick"/>
+   
+   <condition property="is-imagemagick">
+      <equals arg1="${image.module}" arg2="imagemagick"/>
+   </condition>
+   
+   <condition property="is-devil">
+      <equals arg1="${image.module}" arg2="devil"/>
+   </condition>
+
+   <!-- ImageMagick defaults -->
+   <condition property="imagemagick.include.path" value=".">
+      <isset property="is-imagemagick"/>
+   </condition>
+
+   <condition property="imagemagick.library.path" value=".">
+      <isset property="is-imagemagick"/>
+   </condition>
 
    <condition property="imagemagick.library.name" value="CORE_RL_wand_">
-      <isset property="is-windows"/>
+      <and>
+         <isset property="is-imagemagick"/>
+         <isset property="is-windows"/>
+      </and>
    </condition>
    
    <condition property="imagemagick.library.name" value="Wand">
-      <or>
-         <isset property="is-unix"/>
-         <isset property="is-osx"/>
-      </or>
+      <and>
+         <isset property="is-imagemagick"/>
+         <or>
+            <isset property="is-unix"/>
+            <isset property="is-osx"/>
+         </or>
+      </and>
+   </condition>
+
+   <!-- DevIL defaults -->
+   <condition property="devil.include.path" value=".">
+      <isset property="is-devil"/>
+   </condition>
+
+   <condition property="devil.library.path" value=".">
+      <isset property="is-devil"/>
+   </condition>
+
+   <condition property="devil.base.library.name" value="DevIL">
+      <and>
+         <isset property="is-devil"/>
+         <isset property="is-windows"/>
+      </and>
+   </condition>
+   
+   <condition property="devil.base.library.name" value="IL">
+      <and>
+         <isset property="is-devil"/>
+         <or>
+            <isset property="is-unix"/>
+            <isset property="is-osx"/>
+         </or>
+      </and>
+   </condition>
+   
+   <condition property="devil.util.library.name" value="ILU">
+      <isset property="is-devil"/>
    </condition>
 
    <property name="neko.include.path" value="."/>
@@ -251,9 +303,9 @@
    </target>
 
    <!-- -native-image target: build native image module -->
-   <target name="-native-image">
-      <cc name="${cpp.compiler}" subsystem="console" debug="false" outtype="shared" objdir="${objdir}" outfile="${objdir}/image">
-         <fileset file="${srcdir.native}/image.cpp"/>
+   <target name="-native-image-imagemagick" if="is-imagemagick">
+      <cc name="${cpp.compiler}" subsystem="console" debug="false" outtype="shared" objdir="${objdir}" outfile="${objdir}/image-imagemagick">
+         <fileset file="${srcdir.native}/image-imagemagick.cpp"/>
          <compilerarg value="/EHsc" if="is-msvc"/>
          <includepath>
             <pathelement location="${imagemagick.include.path}"/>
@@ -278,10 +330,44 @@
          </linker>
 
       </cc>
-      <move file="${objdir}/image.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
-      <move file="${objdir}/libimage.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
-      <move file="${objdir}/image.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/image-imagemagick.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/libimage-imagemagick.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/image-imagemagick.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
    </target>
+   
+   <target name="-native-image-devil" if="is-devil">
+      <cc name="${cpp.compiler}" subsystem="console" debug="false" outtype="shared" objdir="${objdir}" outfile="${objdir}/image-devil">
+         <fileset file="${srcdir.native}/image-devil.cpp"/>
+         <compilerarg value="/EHsc" if="is-msvc"/>
+         <includepath>
+            <pathelement location="${devil.include.path}"/>
+            <pathelement location="${neko.include.path}"/>
+         </includepath>
+            
+         <linker name="g++" unless="is-msvc">
+            <!-- Hack for some OSX variants where cpptasks doesn't correctly indentify OS -->
+            <linkerarg value="-dynamiclib" if="is-osx"/>
+
+            <libset dir="${devil.library.path}" libs="${devil.base.library.name}"/>
+            <libset dir="${devil.library.path}" libs="${devil.util.library.name}"/>
+            <libset dir="${neko.library.path}" libs="neko" unless="is-mingw"/>
+            
+            <!-- Link directly to neko DLL in case of MinGW -->
+            <linkerarg value="${neko.library.path}/neko.dll" if="is-mingw"/>
+         </linker>
+         
+         <linker name="msvc" if="is-msvc">
+            <libset dir="${devil.library.path}" type="shared" libs="${devil.base.library.name}"/>
+            <libset dir="${devil.library.path}" type="shared" libs="${devil.util.library.name}"/>
+            <libset dir="${neko.library.path}" type="shared" libs="neko"/>
+         </linker>
+
+      </cc>
+      <move file="${objdir}/image-devil.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/libimage-devil.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/image-devil.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+   </target>
+
    
    <!-- -native-font target: build native font module -->
    <target name="-native-font">
@@ -318,7 +404,7 @@
    </target>
 
    <!-- native target: build native image and font modules -->
-   <target name="native" depends="-init, -native-image, -native-font" description="compile native modules">
+   <target name="native" depends="-init, -native-image-imagemagick, -native-image-devil, -native-font" description="compile native modules">
    </target>
    
    <!-- clean target: restore project to its inital state -->

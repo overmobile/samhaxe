@@ -51,7 +51,9 @@
       import - Path to the file to be imported.
 
    Optional attributes:
-      None
+      symbols - (_false_, true) Controls the inclusion of SymbolClass tag entries. Libraries generated
+         with flex may include some non Sprite based class to character ID mappings which cause runtime
+         errors in flash player.
 
    Superclass:
       No AS3 class stub is generated.
@@ -91,8 +93,8 @@ class Swf {
 
       var bin_rule = RChoice([
          RNode(ns + "library", [
-            Att("import")/*,
-            Att("genclass", FBool, "false")*/
+            Att("import"),
+            Att("symbols", FBool, "false")
          ]),
          RNode(ns + "swf", [
             Att("class"),
@@ -119,7 +121,7 @@ class Swf {
       var hdr = swf.header;
       
       var isLib = swf_elem.lname == "library";
-      
+
       // calc!
 
       newCid = new IntHash();
@@ -129,7 +131,7 @@ class Swf {
 
       // warning! this renders the original
       // swf tag structure unusable
-      walkTags(swf.tags, main_tags, clip_tags);
+      walkTags(swf.tags, main_tags, clip_tags, (!isLib || !swf_elem.has.symbols || swf_elem.att.symbols == "true") );
 
       if (!isLib) {
          var id = moduleService_1_0.getIdRegistry().getNewId();
@@ -206,7 +208,9 @@ class Swf {
     import - Path to the file to be imported.
 
   Optional attributes:
-    None
+    symbols - Controls the inclusion of SymbolClass tag entries.
+      false - (default) Do not include SymbolClass mappings.
+      true  - Include SymbolClass mappings.
 
   Superclass:
     No AS3 class stub is generated.
@@ -268,7 +272,7 @@ class Swf {
       return new_fs;
    }
 
-   function walkTags(tags : Array<SWFTag>, main_tags : Array<SWFTag>, clip_tags : Array<SWFTag>) {
+   function walkTags(tags : Array<SWFTag>, main_tags : Array<SWFTag>, clip_tags : Array<SWFTag>, symbols: Bool) {
       var idReg = moduleService_1_0.getIdRegistry();
       var symReg = moduleService_1_0.getSymbolRegistry();
 
@@ -421,7 +425,7 @@ class Swf {
                   
             case TClip(id, frames, tags):
                var clip_tags = new Array<SWFTag>();
-               walkTags(tags, main_tags, clip_tags);
+               walkTags(tags, main_tags, clip_tags, symbols);
                
                main_tags.push(
                   TClip(getCid(id), frames, clip_tags)
@@ -459,9 +463,11 @@ class Swf {
                // XXX: Note: Multiple class defs for the same classname may still
                // be present
 
-               for (sym in syms) {
-                  sym.cid = getCid(sym.cid);
-                  symReg.addSymbol(sym.cid, sym.className);
+               if(symbols) {
+                  for (sym in syms) {
+                     sym.cid = getCid(sym.cid);
+                     symReg.addSymbol(sym.cid, sym.className);
+                  }
                }
 
             //

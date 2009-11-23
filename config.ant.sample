@@ -12,6 +12,10 @@
 ##   msvc - Microsoft Visual C compiler
 #cpp.compiler=g++
 
+## Native image loading module to use
+#image.module=imagemagick
+#image.module=devil
+
 ## Path to ImageMagick installation directory
 #imagemagick.path=c:/program files/imagemagick
 
@@ -25,6 +29,21 @@
 #imagemagick.library.name=CORE_RL_wand_
 #imagemagick.library.name=MagickWand
 #imagemagick.library.name=Wand
+
+## Path to DevIL installation directory
+#devil.path=c:/program files/devil
+
+## Path to DevIL include directory
+#devil.include.path=${devil.path}/include
+
+## Path to DevIL library directory (for locating DevIL.dll, ILU.dll)
+#devil.library.path=${devil.path}/lib
+
+## Name of DevIL base library
+#devil.base.library.name=DevIL
+
+## Name of DevIL util library
+#devil.util.library.name=ILU
 
 ## Path to neko installation directory
 #neko.path=c:/program files/motion-twin/neko
