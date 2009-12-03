@@ -6,7 +6,8 @@
       Imports specified image from an image file as TBitsLossless2 or TBitsJPEG2 swf tag.
 
       The import method (lossless or lossy) depends on the file type and is determinded automatically.
-      Any image format supported by ImageMagick (<http://www.imagemagick.org/script/formats.php>) can be used.
+      Any image format supported by ImageMagick (<http://www.imagemagick.org/script/formats.php>) or
+      DevIL (<http://openil.sourceforge.net/features.php>) - depending on your configuration - can be used.
 
    Mandatory attributes:
       import - Path to the file to be imported.

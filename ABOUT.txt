@@ -19,8 +19,9 @@ Section: Tools of the trade
    (http://swfmill.org). Currently you can import the following types of assets
    with it:
 
-   - *Image files*: Every type supported by ImageMagick See the complete list
-     here: http://www.imagemagick.org/script/formats.php
+   - *Image files*: Every type supported by ImageMagick or DevIL See the complete
+     list here: http://www.imagemagick.org/script/formats.php,
+     http://openil.sourceforge.net/features.php
 
    - *Sound files*: MP3s, WAVs
    
@@ -77,6 +78,8 @@ Section: Used softwares and tools
 
    ImageMagick - (http://www.imagemagick.org) The native part of Image import
       module uses ImageMagick to load images of different formats.
+
+   DevIL - (http://openil.sourceforge.net/) An alternative to ImageMagick.
 
    FreeType 2 - (http://www.freetype.org/index2.html) The native part of Font
       import module uses FreeType to load TrueType fonts.

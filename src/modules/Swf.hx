@@ -499,9 +499,12 @@ class Swf {
             //
             default:
                // check
+               // No appropriate enum constructor for these tags
+               // in hxformat yet.
                switch (t) {
                   case TUnknown(tid, data):
                      switch (tid) {
+                        // These tags go into the root.
                         case
                            TagId.DefineFontAlignZones,
                            TagId.DefineFontName,
@@ -509,14 +512,16 @@ class Swf {
                            TagId.DefineText2,
                            TagId.DefineEditText,
                            TagId.CSMTextSettings,
-                           TagId.DefineFont4,
-
-                           TagId.DefineSceneAndFrameLabelData:
+                           TagId.DefineFont4:
 
                            main_tags.push(
                               TUnknown(tid, rewriteCid(data))
                            );
+
+                        // Leve these out
+                        case TagId.DefineSceneAndFrameLabelData:
                         
+                        // These tags go inside the MovieClip
                         default:
                            clip_tags.push(t);
                      }
