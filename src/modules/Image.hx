@@ -163,7 +163,8 @@ class Image {
       catch (e : Dynamic) {
          throw "File '" + jpeg_file + "' not found!";
       }
-      
+
+      /*
       f.bigEndian = true;
 
       var soi_pos: Int = -1;
@@ -209,6 +210,10 @@ class Image {
 
       f.seek(soi_pos, SeekBegin);
       var data = f.read(eoi_pos - soi_pos);
+      f.close();
+      */
+
+      var data = f.readAll();
       f.close();
 
       return data;
