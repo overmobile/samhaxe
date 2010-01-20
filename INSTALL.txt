@@ -2,6 +2,73 @@
 Title: Installation / compilation instructions
 ===============================================
 
+Section: Installing the precompiled Win32 binary
+
+---------------------------------
+Group: Prerequisities
+---------------------------------
+Dependencies required by SamHaXe. *Please note that the following applies only
+to _win32 binary versions_. You _don't_ have to configure anything when using the
+_win32 installer_.*
+
+To use the precompiled Win32 binary you will need the following software
+installed on your system:
+
+   FreeType 2 - <http://sourceforge.net/projects/freetype/files/>
+   ImageMagick - <http://www.imagemagick.org/script/binary-releases.php#windows>
+   ... or ... - (depending on your choice of binary)
+   DevIL - <http://openil.sourceforge.net/download.php>
+
+---------------------------------
+Group: FreeType settings
+---------------------------------
+   Steps required using FreeType for font import.
+
+   Let's assume that FreeType is installed under _C:\Program Files\FreeType2_. Then
+   the following path has to be added to PATH environment variable:
+
+      C:\Program Files\FreeType2\bin - Required for locating *freetype6.dll*.
+
+---------------------------------
+Group: ImageMagick settings
+---------------------------------
+   Steps required when using ImageMagick for image import.
+
+   Let's assume that ImageMagick is installed under _C:\Program Files\ImageMagick_.
+   Then the two additional paths have to be added to PATH environment
+   variable:
+
+      C:\Program Files\ImageMagick - Required for locating *CORE_RL_XXXX_.dll*
+      files.
+      C:\Program Files\ImageMagick\modules - Required for sub-modules used by
+      ImageMagick.
+
+   Furthermore it looks like that windows binary releases of ImageMagick link
+   to Visual C's runtime libraries so you have to install those too. From
+   ImageMagick's website:
+
+   > If you have any problems, install the
+   > Visual C++ 2008 Redistributable Package (x86) or
+   > Visual C++ 2008 Redistributable Package (x64).
+   > 64-bit Windows requires both packages (x86 & x64).
+
+   Microsoft Visual C++ 2008 SP1 Redistributable Package (x86) -
+      http://www.microsoft.com/downloads/details.aspx?familyid=A5C84275-3B97-4AB7-A40D-3802B2AF5FC2
+
+   Microsoft Visual C++ 2008 SP1 Redistributable Package (x64) -
+      http://www.microsoft.com/downloads/details.aspx?familyid=BA9257CA-337F-4B40-8C14-157CFDFFEE4E
+
+---------------------------------
+Group: DevIL settings
+---------------------------------
+   Steps required when using DevIL for image import.
+
+   Let's assume that DevIL is installed under _C:\Program Files\DevIL_. Then
+   the following path has to be added to PATH environment variable:
+
+      C:\Program Files\DevIL\lib - Required for locating *DevIL.dll* and
+      *ILU.dll* files.
+
 Section: Compiling from source
 
 ---------------------------------
@@ -19,7 +86,7 @@ Required software:
    Some supported C/C++ sompiler suite - GCC, MinGW or VisualStudio
    ImageMagick with C/C++ dev package - <http://www.imagemagick.org/script/binary-releases.php>
    DevIL with C/C++ dev package - <http://openil.sourceforge.net/download.php>
-   FreeType 2 with C/C++ dev package - <http://gnuwin32.sourceforge.net/packages/freetype.htm>
+   FreeType 2 with C/C++ dev package - <http://sourceforge.net/projects/freetype/files/>
    Apache Ant 1.7 or better - <http://ant.apache.org/bindownload.cgi>
    NaturalDocs - <http://www.naturaldocs.org/download.html>
 
@@ -125,11 +192,21 @@ Configuring the C++ compiler under windows:
    Studio Command Prompt" which is accessible from the start menu. Launching
    this command prompt appends MSVC to PATH environment variable.
 
+Configuring FreeType under windows:
+
+   FreeType requires some more configuration beyond specifying include and
+   library paths. That is because the compiled native modules have to be able
+   to locate FreeType's DLL. This can be achieved with one more path
+   added to the PATH environment variable. Let's assume that FreeType is
+   installed under _C:\Program Files\FreeType2_. Then the additional path is:
+
+      C:\Program Files\FreeType2\bin - Required for locating *freetype6.dll*.
+
 Configuring ImageMagick under windows:
 
    ImageMagick requires some more configuration beyond specifying include and
    library paths. That is because the compiled native modules have to be able
-   to locate ImageMagick's DLLs. This can be achieved with two more paths are
+   to locate ImageMagick's DLLs. This can be achieved with two more paths
    added to the PATH environment variable. Let's assume that ImageMagick is
    installed under _C:\Program Files\ImageMagick_. Then the two additional
    paths are:
@@ -158,7 +235,7 @@ Configuring DevIL under windows:
 
    DevIL requires some more configuration beyond specifying include and
    library paths. That is because the compiled native modules have to be able
-   to locate DevIL's DLLs. This can be achieved with one more path is
+   to locate DevIL's DLLs. This can be achieved with one more path
    added to the PATH environment variable. Let's assume that DevIL is
    installed under _C:\Program Files\DevIL_. Then the additional path is:
 
@@ -195,6 +272,10 @@ Available targets are:
 
    samhaxe - Compile the entire source including modules, native modules and
       SamHaXe itself. This is the default target.
+   
+   win32-installer - Build a NSIS (Nullsoft Scriptable Install System,
+      http://nsis.sourceforge.net/) based win32 installer. Only available under
+      windows and with DevIL image library.
 
 To compile SamHaxe issue the following command:
 > prompt> ant
