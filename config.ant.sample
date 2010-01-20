@@ -87,3 +87,5 @@
 ## Configuration installation path
 #install.path.config=/etc
 
+## Path to NSIS (Nullsoft Scriptable Installation System)
+#nsis.path=c:/program files/nsis

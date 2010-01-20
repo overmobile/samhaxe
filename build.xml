@@ -195,6 +195,13 @@
          <isset property="is-osx"/>
       </or>
    </condition>
+   
+   <condition property="run.win32-installer">
+      <and>
+         <isset property="is-windows"/>
+         <isset property="is-devil"/>
+      </and>
+   </condition>
 
    <!-- include external task definitions -->
    <taskdef resource="net/wildwinter/anthx/anthx.properties" classpath="${basedir}/lib/AntHX.jar"/>
@@ -236,6 +243,7 @@
       <mkdir dir="${demodir.bin}"/>
       <mkdir dir="${demodir.bin.assets}"/>
       <mkdir dir="${demodir.bin.apps}"/>
+      <mkdir dir="${distdir}"/>
    </target>
 
    <!-- samhaxe target: build Sam HaXe and its modules -->
@@ -414,6 +422,7 @@
       <delete dir="${docdir}"/>
       <delete dir="${naturaldocs.datadir}"/>
       <delete dir="${demodir.bin}"/>
+      <delete dir="${distdir}"/>
    </target>
 
    <!-- doc target: build documentation -->
@@ -614,5 +623,12 @@
       <zip basedir="${distdir}" destfile="${distdir}/samhaxe-${version}.zip"/>
 
       <delete dir="${distdir.samhaxe}"/>
+   </target>
+   
+   <target name="win32-installer" depends="samhaxe, doc" description="build win32 installer using NSIS (only under win32 with DevIL!)">
+      <fail unless="run.win32-installer" message="win32-installer target is vaild only under win32 with DevIL image module!"/>
+      <exec executable="${nsis.path}/makensis" dir="${basedir}/win32">
+         <arg value="SamHaXe.nsi"/>
+      </exec>
    </target>
 </project>
