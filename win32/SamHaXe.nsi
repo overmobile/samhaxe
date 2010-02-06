@@ -6,7 +6,8 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
-  
+  !include "FileFunc.nsh"
+  !include "LogicLib.nsh"
   !include "StrFunc.nsh"
   ${StrRep}
 
@@ -14,7 +15,7 @@
 ;General
 
   Name "Sam HaXe"
-  OutFile "..\dist\SamHaXe-${SamhaxeVersion}.exe"
+  OutFile "..\dist\samhaxe-${SamhaxeVersion}.exe"
 
   ;Default installation folder
   InstallDir $PROGRAMFILES\SamHaXe
@@ -35,6 +36,14 @@
 
   !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
   !insertmacro MUI_PAGE_DIRECTORY
+  
+  Var StartMenuFolder
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SamHaXe" 
+  !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+  
+  !insertmacro MUI_PAGE_STARTMENU "Application" $StartMenuFolder
+  
   !insertmacro MUI_PAGE_INSTFILES
   
   !insertmacro MUI_UNPAGE_CONFIRM
@@ -44,13 +53,28 @@
 ;Languages
  
   !insertmacro MUI_LANGUAGE "English"
-
+  
 ;--------------------------------
 ;Installer Sections
+
+Function .onVerifyInstDir
+    FindFirst $0 $1 "$INSTDIR\*.*"
+    ${While} $1 != ""
+        ${If} $1 != "."
+            ${If} $1 != ".."
+                Abort "The installation directory should be empty or non-existent!"
+            ${Endif}
+        ${Endif}
+        FindNext $0 $1
+    ${EndWhile}
+    End:
+FunctionEnd
 
 Section "Dummy Section" SecDummy
 
   SetOutPath $INSTDIR
+  
+  WriteRegStr HKCU "Software\SamHaXe" "" $INSTDIR
   
   File ..\bin\SamHaXe.exe
   File ..\samhaxe.conf.xml.template
@@ -80,6 +104,14 @@ Section "Dummy Section" SecDummy
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+  
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    
+    CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Documentation.lnk" "$INSTDIR\doc\index.html"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  
+  !insertmacro MUI_STARTMENU_WRITE_END
 
 SectionEnd
 
@@ -89,5 +121,13 @@ SectionEnd
 Section "Uninstall"
 
   RMDir /r "$INSTDIR"
+  
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+    
+  Delete "$SMPROGRAMS\$StartMenuFolder\Documentation.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\$StartMenuFolder"
+  
+  DeleteRegKey /ifempty HKCU "Software\SamHaXe"
 
 SectionEnd
