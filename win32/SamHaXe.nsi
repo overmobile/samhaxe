@@ -1,4 +1,3 @@
-!define SamhaxeVersion "v1.0-mojito"
 !define DevilVersion "1.7.8"
 !define FreeTypeVersion "2.3.5-1"
 
@@ -15,7 +14,7 @@
 ;General
 
   Name "Sam HaXe"
-  OutFile "..\dist\samhaxe-${SamhaxeVersion}.exe"
+  OutFile "..\dist\samhaxe-${VERSION}.exe"
 
   ;Default installation folder
   InstallDir $PROGRAMFILES\SamHaXe
@@ -67,7 +66,6 @@ Function .onVerifyInstDir
         ${Endif}
         FindNext $0 $1
     ${EndWhile}
-    End:
 FunctionEnd
 
 Section "Dummy Section" SecDummy

@@ -3,7 +3,7 @@
       SamHaXe: a flash resource assembly tool
    </description>
 
-   <property name="version" value="1.0-mojito"/>
+   <property name="version.name" value="1.0-mojito"/>
    
    <property environment="env"/>
   
@@ -135,6 +135,7 @@
    <property name="neko.include.path" value="."/>
    <property name="neko.library.path" value="."/>
 
+   <!-- FreeType defaults -->
    <condition property="freetype.include.path" value="/usr/include">
       <or>
          <isset property="is-unix"/>
@@ -159,7 +160,8 @@
    <condition property="haxe.debug.arg" value="">
       <equals arg1="${haxe.debug}" arg2="false"/>
    </condition>
-      
+
+   <!-- NaturalDocs defaults -->
    <condition property="naturaldocs.executable" value="${naturaldocs.path}/NaturalDocs.bat">
       <isset property="is-windows"/>
    </condition>
@@ -233,7 +235,7 @@
       <pathelement location="${srcdir}"/>
    </path>
   
-   <!-- -init target: create directory structure -->
+   <!-- -init target: create directory structure and acquire actual svn revision number-->
    <target name="-init">
       <mkdir dir="${objdir}"/>
       <mkdir dir="${bindir}"/>
@@ -244,6 +246,59 @@
       <mkdir dir="${demodir.bin.assets}"/>
       <mkdir dir="${demodir.bin.apps}"/>
       <mkdir dir="${distdir}"/>
+   </target>
+   
+   <!-- -version target: set version related properties -->
+   <target name="-version">
+      <!-- acquire svn revision -->
+      <exec executable="svn" dir="${basedir}" outputproperty="svn.info" resultproperty="svn.result" failonerror="false">
+         <arg value="info"/>
+      </exec>
+      
+      <loadresource property="svn.revision">
+         <propertyresource name="svn.info"/>
+         <filterchain>
+            <linecontains>
+               <contains value="Revision:"/>
+            </linecontains>
+            <tokenfilter>
+               <stringtokenizer suppressdelims="true"/>
+               <containsregex pattern="[0-9]+"/>
+            </tokenfilter>
+         </filterchain>
+      </loadresource>
+      
+      <condition property="version.revision" value="r${svn.revision}">
+         <and>
+            <isset property="svn.result"/>
+            <not>
+               <equals arg1="svn.revision" arg2=""/>
+            </not>
+         </and>
+      </condition>
+      <property name="version.revision" value="unknown"/>
+      
+      <!-- set architecture version property -->
+      <condition property="version.arch" value="win32">
+         <isset property="is-windows"/>
+      </condition>
+   
+      <condition property="version.arch" value="unix">
+         <isset property="is-unix"/>
+      </condition>
+   
+      <condition property="version.arch" value="osx">
+         <isset property="is-osx"/>
+      </condition>
+      
+      <!-- set image module version property -->
+      <condition property="version.image.module" value="ImageMagick">
+         <isset property="is-imagemagick"/>
+      </condition>
+   
+      <condition property="version.image.module" value="DevIL">
+         <isset property="is-devil"/>
+      </condition>
    </target>
 
    <!-- samhaxe target: build Sam HaXe and its modules -->
@@ -600,12 +655,9 @@
    </target>
 
    <!-- dist target: build a binary distribution compressed with zip -->
-   <target name="dist" depends="samhaxe, doc" description="build binary distribution">
-      <delete includeemptydirs="true">
-         <fileset dir="${distdir}" includes="**/*"/>
-      </delete>
-
-      <property name="distdir.samhaxe" location="${distdir}/samhaxe-${version}"/>
+   <target name="dist" depends="samhaxe, doc, -version" description="build binary distribution">
+      <property name="samhaxe.binary" value="samhaxe-${version.name}-${version.revision}-${version.arch}-${version.image.module}"/>
+      <property name="distdir.samhaxe" location="${distdir}/${samhaxe.binary}"/>
 
       <mkdir dir="${distdir.samhaxe}"/>
       <mkdir dir="${distdir.samhaxe}/modules"/>
@@ -620,14 +672,16 @@
       <copy todir="${distdir.samhaxe}/doc">
          <fileset dir="${docdir}"/>
       </copy>
-      <zip basedir="${distdir}" destfile="${distdir}/samhaxe-${version}.zip"/>
+      <zip basedir="${distdir}" destfile="${distdir}/${samhaxe.binary}.zip" includes="${samhaxe.binary}/**"/>
 
       <delete dir="${distdir.samhaxe}"/>
    </target>
    
-   <target name="win32-installer" depends="samhaxe, doc" description="build win32 installer using NSIS (only under win32 with DevIL!)">
+   <!-- win32-installer target: build a win32 installer using NSIS -->
+   <target name="win32-installer" depends="samhaxe, doc, -version" description="build win32 installer using NSIS (only under win32 with DevIL!)">
       <fail unless="run.win32-installer" message="win32-installer target is vaild only under win32 with DevIL image module!"/>
       <exec executable="${nsis.path}/makensis" dir="${basedir}/win32">
+         <arg value="/DVERSION=${version.name}-${version.revision}"/>
          <arg value="SamHaXe.nsi"/>
       </exec>
    </target>
