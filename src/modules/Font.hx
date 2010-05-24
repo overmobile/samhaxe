@@ -20,17 +20,21 @@
             *symbolAndClass* (generate symbol and AS3 class stub)
 
    Child nodes:
-      <ttf>'s child nodes specify which characters to import from the font file. If <ttf> doesn't have
+      <ttf> has only one child node so far: *<characters>* which has two other optional child nodes
+      *<include>* and *<exclude>* for specifying indivudal characters or character ranges to import / omit
+      respectively.
+      
+      If <ttf> doesn't have
       any child nodes then every character which appear in the file are imported.
 
-   Group: include
+   Group: include (child of <characters>)
       Specifies a character set or character range to include.
 
    Optional attributes:
       range - Range of characters in the form: *firstCharacter..lastCharacter*
       characters - Individual characters in arbitrary order
 
-   Group: exclude
+   Group: exclude (child of <characters>)
       Specifies a character set or character range to exclude.
 
    Optional attributes:
@@ -43,10 +47,12 @@
      
       (code)
       <font:ttf import="arial.ttf" name="Arial">
-         <include range="0..9"/>
-         <exclude characters="13579"/>
-         <include characters="abxyz"/>
-      </font>
+         <font:characters>
+            <font:include range="0..9"/>
+            <font:exclude characters="13579"/>
+            <font:include characters="abxyz"/>
+         </font:characters>
+      </font:ttf>
       (end) 
       
    Example 2:
@@ -55,10 +61,12 @@
      
       (code)
       <font:ttf import="arial.ttf" class="ArialClass" name="Arial">
-         <include range="0..9"/>
-         <exclude characters="13579"/>
-         <include characters="abxyz"/>
-      </font>
+         <font:characters>
+            <font:include range="0..9"/>
+            <font:exclude characters="13579"/>
+            <font:include characters="abxyz"/>
+         </font:characters>
+      </font:ttf>
       (end)
 
       After loading an swf containing such a font with _flash.display.Loader_,
@@ -398,16 +406,18 @@ class Font {
       - traditionalChinese
 
   Child nodes:
-    <ttf> child nodes specify which characters to import from the font file. If <ttf> does not have
-    any child nodes then every character which appear in the file are imported.
+    <ttf> has only one child node so far: <characters> which has two other optional child nodes
+    <include> and <exclude> for specifying indivudal characters or character ranges to import / omit
+      respectively.
+    If <ttf> does not have any child nodes then every character which appear in the file are imported.
 
-    <include>: Specifies a character set or character range to include.
+    <include> (child of <characters>): Specifies a character set or character range to include.
 
     Optional attributes:
       range      - Range of characters in the form: firstCharacter..lastCharacter
       characters - Individual characters in arbitrary order
 
-     <exclude>: Specifies a character set or character range to exclude.
+     <exclude> (child of <characters>): Specifies a character set or character range to exclude.
 
      Optional attributes:
        range      - Range of characters in the form: firstCharacter..lastCharacter
@@ -418,10 +428,12 @@ class Font {
     the even numbers and the letters _abxyz_ from _arial.ttf_ and names the font _Arial_.
      
       <font:ttf import="arial.ttf" name="Arial">
-         <include range="0..9"/>
-         <exclude characters="13579"/>
-         <include characters="abxyz"/>
-      </font>';
+         <font:characters>
+            <font:include range="0..9"/>
+            <font:exclude characters="13579"/>
+            <font:include characters="abxyz"/>
+         </font:characters>
+      </font:ttf>';
    }
    
    function build_charcode_vector(font: NsFastXml): Array<Int> {
