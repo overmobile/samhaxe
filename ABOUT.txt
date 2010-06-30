@@ -1,6 +1,6 @@
-=====================
-Title: About SamHaXe
-=====================
+=========================
+Title: About SamHaXe-Open
+=========================
 
 ----------------------------------------
 Section: "I used to be a spy, until..."
@@ -9,6 +9,10 @@ Section: "I used to be a spy, until..."
    familiar with _Burn Notice_ the name _Sam Axe_ might ring a bell.
    Burn Notice is a series about spies - and what do flash developers  
    and spies have in common? They need assets. Assets are very important.
+
+   The open-source build of SamHaXe is now called SamHaXe-Open. However
+   we keep referring to SamHaXe-Open as SamHaXe in the future, and discriminate
+   the private version where it is required.
 
 ----------------------------
 Section: Tools of the trade

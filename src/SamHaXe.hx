@@ -292,6 +292,27 @@ class SamHaXe implements IdRegistry, implements SymbolRegistry, implements AS3Re
       package_name = if(r_root.exists("package") && r_root.get("package").length > 0) r_root.get("package") else "";
       setVariable("package", package_name);
 
+      var swf_should_use_network =
+         r_root.exists("network") && (r_root.get("network") == "true");
+
+      var swf_width =
+         if (r_root.exists("w"))
+            Std.parseInt(r_root.get("w"))
+         else
+            100;
+
+      var swf_height =
+         if (r_root.exists("h"))
+            Std.parseInt(r_root.get("h"))
+         else
+            300;
+      
+      var swf_fps =
+         if (r_root.exists("fps"))
+            Std.parseInt(r_root.get("fps"))
+         else
+            30;
+
       // Assign namespaces to modules
       ns2module = new Hash<SamHaXeModule>();
       try {
@@ -353,9 +374,9 @@ class SamHaXe implements IdRegistry, implements SymbolRegistry, implements AS3Re
       swf_writer.writeHeader({
          version: flash_version,
          compressed: (r_fast.att.compress.toLowerCase() == "true"),
-         width: 100,
-         height: 300,
-         fps: 30,
+         width: swf_width,
+         height: swf_height,
+         fps: swf_fps << 8,
          nframes: r_fast.qnodes(SHX_NS, "frame").length
       });
       
@@ -364,7 +385,7 @@ class SamHaXe implements IdRegistry, implements SymbolRegistry, implements AS3Re
          false,   // Fp10 use gpu
          true,    // Fp10 HasMeta, Fp9 UseSymbolClass
          true,    // UseAs3
-         false    // UseNetwork
+         swf_should_use_network    // UseNetwork
       ));
 
       for(frame in r_fast.qnodes(SHX_NS, "frame")) {

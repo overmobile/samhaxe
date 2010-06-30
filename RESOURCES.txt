@@ -94,6 +94,20 @@ Group: <shx:resources>
       classes and AS3 class stubs. It's a convenience attribute so you don't
       have to write _my.package.resources_ before every class name.
 
+   The following optional attributes are interesting only in the case of
+   non-resource library SWF files, so you can safely disregard them most of the
+   time.
+
+   network - Optional attribute specifying the default sandbox of the SWF.
+      If _"true"_ then network-only sandbox, else local-with-filesystem sandbox
+      (the default).
+
+   w - Optional attribute, integer number, the width of the SWF.
+
+   h - Optional attribute, integer number, the height of the SWF.
+
+   fps - Optional attribute, integer number, the FPS of the SWF.
+
    Besides the attributes there are two namespace decralations (except shx)
    in the root node: _img_ and _font_. You assign an import module to a
    namespace with a namespace declaration. After that if SamHaXe encounters

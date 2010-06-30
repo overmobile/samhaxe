@@ -54,6 +54,11 @@
       symbols - (_false_, true) Controls the inclusion of SymbolClass tag entries. Libraries generated
          with flex may include some non Sprite based class to character ID mappings which cause runtime
          errors in flash player.
+      keeproot - (_false_, true) If true, for a SymbolClass entry with CID = 0 the CID is not rewritten
+         but is kept zero. Normally CID of any asset must be greater than zero, but CID = 0 tells which
+         asset is the document root. Therefore you can extend an existing runnable SWF with assets if
+         you import that SWF as a library with keeproot = true. Note: don't pass this option for more than
+         one imported SWFs.
 
    Superclass:
       No AS3 class stub is generated.
@@ -84,6 +89,9 @@ class Swf {
    // Keeps track of rewritten character id's
    //
    var newCid : IntHash<Int>;
+   
+   // Doesn't rewrite CID 0 -> 1 in SymbolClass if true (keeps it 0)
+   var keepRoot: Bool;
 
    public function new() {
    }
@@ -94,7 +102,8 @@ class Swf {
       var bin_rule = RChoice([
          RNode(ns + "library", [
             Att("import"),
-            Att("symbols", FBool, "false")
+            Att("symbols", FBool, "false"),
+            Att("keeproot", FBool, "false")
          ]),
          RNode(ns + "swf", [
             Att("class"),
@@ -121,6 +130,7 @@ class Swf {
       var hdr = swf.header;
       
       var isLib = swf_elem.lname == "library";
+      keepRoot = swf_elem.x.get("keeproot") == "true";
 
       // calc!
 
@@ -465,7 +475,9 @@ class Swf {
 
                if(symbols) {
                   for (sym in syms) {
-                     sym.cid = getCid(sym.cid);
+                     if (!(sym.cid == 0 && keepRoot)) {
+                        sym.cid = getCid(sym.cid);
+                     }
                      symReg.addSymbol(sym.cid, sym.className);
                   }
                }

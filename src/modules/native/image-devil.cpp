@@ -2,6 +2,8 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
+#include <string.h> /* for memcpy */
+
 #include <set>
 
 extern "C" value init() {
