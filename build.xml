@@ -181,7 +181,7 @@
    <condition property="install.path.config" value="${install.path.bin}">
       <isset property="is-windows"/>
    </condition>
-   <condition property="install.path.config" value="/etc">
+   <condition property="install.path.config" value="${install.path}/etc">
       <or>
          <isset property="is-unix"/>
          <isset property="is-osx"/>

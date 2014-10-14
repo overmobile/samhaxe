@@ -211,6 +211,8 @@ class SamHaXe implements IdRegistry, implements SymbolRegistry, implements AS3Re
             var config_file = "~/.samhaxe.conf.xml";
             if(!neko.FileSystem.exists(config_file))
                config_file = "/etc/samhaxe.conf.xml";
+               if(!neko.FileSystem.exists(config_file))
+                  config_file = neko.io.Path.directory(neko.Sys.executablePath()) + "/../etc/samhaxe.conf.xml";
             #end
             
             config.load(config_file);
