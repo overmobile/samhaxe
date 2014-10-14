@@ -230,7 +230,6 @@
    <property name="naturaldocs.datadir" location="${naturaldocs.dir}/Data"/>
    
    <path id="project.classpath">
-      <pathelement location="${haxe.stdpath}"/>
       <pathelement location="${basedir}/lib/hxformat"/>
       <pathelement location="${srcdir}"/>
    </path>
