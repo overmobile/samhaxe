@@ -4,9 +4,12 @@ SamHaXe -- a flash resource assembly tool
 
 ## Installation
 
-Installing SamHaXe can get somewhat tricky, see
-[INSTALL.md](https://github.com/overmobile/samhaxe/INSTALL.md) for detailed
-instructions.
+Precompiled binaries for Win32 are available in the
+[Releases](https://github.com/overmobile/samhaxe/releases) section.
+
+Installing SamHaXe from source can get somewhat tricky. See
+[INSTALL.md](https://github.com/overmobile/samhaxe/blob/master/INSTALL.md) for
+detailed instructions.
 
 ## Usage
 

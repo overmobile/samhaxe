@@ -2,6 +2,9 @@
 
 ## Installing precompiled binaries (Win32 only)
 
+Precompiled binaries for the latest release are available
+[here](https://github.com/overmobile/samhaxe/releases/tag/1.0)
+
 ### Dependencies
 
 SamHaXe depends on some additional software to do its job.  To use the
@@ -74,6 +77,8 @@ On OS X, relevant configuration items look like the following:
 
     ## Base installation path
     install.path=/opt/samhaxe
+
+For more options, consult `config.ant.sample`.
 
 ### Building and installing
 
