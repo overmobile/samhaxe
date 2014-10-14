@@ -40,6 +40,10 @@
    <condition property="haxe.os" value="OSX">
       <isset property="is-osx"/>
    </condition>
+
+   <condition property="naturaldocs.available">
+       <available file="${naturaldocs.executable}"/>
+   </condition>
    
    <!-- include config.ant -->
    <property file="config.ant"/>
@@ -480,7 +484,7 @@
    </target>
 
    <!-- doc target: build documentation -->
-   <target name="doc" depends="-init" description="build documentation">
+   <target name="doc" depends="-init" description="build documentation" if="naturaldocs.available">
       <exec dir="${naturaldocs.path}" executable="${naturaldocs.executable}">
          <arg value="-i"/>
          <arg value="${basedir}"/>
@@ -636,20 +640,23 @@
 
    </target>
 
+   <target name="-install-doc" depends="doc" description="install SamHaXe documentation" if="naturaldocs.available">
+      <mkdir dir="${install.path.doc}"/>
+
+      <move todir="${install.path.doc}" if="naturaldocs.available">
+         <fileset dir="${docdir}"/>
+      </move>
+   </target>
    <!-- install target: install Sam HaXe and all of its components -->
-   <target name="install" depends="samhaxe, doc" description="install SamHaXe and documentation">
+   <target name="install" depends="samhaxe, -install-doc" description="install SamHaXe and documentation">
       <mkdir dir="${install.path.bin}"/>
       <mkdir dir="${install.path.modules}"/>
-      <mkdir dir="${install.path.doc}"/>
 
       <move file="${bindir}/${samhaxe.executable}" todir="${install.path.bin}"/>
       <copy file="${basedir}/samhaxe.conf.xml.template" tofile="${install.path.config}/samhaxe.conf.xml"/>
       <replace file="${install.path.config}/samhaxe.conf.xml" token="##PATH##" value="${install.path.modules}"/>
       <move todir="${install.path.modules}">
          <fileset dir="${bindir.modules}"/>
-      </move>
-      <move todir="${install.path.doc}">
-         <fileset dir="${docdir}"/>
       </move>
    </target>
 
