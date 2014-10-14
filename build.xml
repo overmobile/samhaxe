@@ -394,7 +394,7 @@
       </cc>
       <move file="${objdir}/image-imagemagick.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
       <move file="${objdir}/libimage-imagemagick.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
-      <move file="${objdir}/image-imagemagick.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/libimage-imagemagick.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
    </target>
    
    <target name="-native-image-devil" if="is-devil">
@@ -427,7 +427,7 @@
       </cc>
       <move file="${objdir}/image-devil.dll" tofile="${bindir.native}/image.ndll" failonerror="false"/>
       <move file="${objdir}/libimage-devil.so" tofile="${bindir.native}/image.ndll" failonerror="false"/>
-      <move file="${objdir}/image-devil.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
+      <move file="${objdir}/libimage-devil.dylib" tofile="${bindir.native}/image.ndll" failonerror="false"/>
    </target>
 
    
@@ -462,7 +462,7 @@
       </cc>
       <move file="${objdir}/font.dll" tofile="${bindir.native}/font.ndll" failonerror="false"/>
       <move file="${objdir}/libfont.so" tofile="${bindir.native}/font.ndll" failonerror="false"/>
-      <move file="${objdir}/font.dylib" tofile="${bindir.native}/font.ndll" failonerror="false"/>
+      <move file="${objdir}/libfont.dylib" tofile="${bindir.native}/font.ndll" failonerror="false"/>
    </target>
 
    <!-- native target: build native image and font modules -->
